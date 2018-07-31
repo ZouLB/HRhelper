@@ -12,7 +12,7 @@
 			</el-form-item>
 			<el-form-item label="接口人" prop="principal">
 				<el-select v-model="businessItem.principal" multiple filterable allow-create default-first-option placeholder="请选择或输入负责人">
-					<el-option v-for="(item,i) in hrForm" :label="item" :value="item">
+					<el-option v-for="(item,i) in hrForm" :key="i" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -116,12 +116,5 @@
     .el-form-item__content .el-button--primary:hover{
     	background-color: #0193C9;
 	}
-	/*.el-form-item__content .el-button--default:hover{
-	    color: #0085B5;
-	    background-color: #eef1f6;
-	}
-	.el-tabs__item.is-active{
-	    color: #0085B5;
-	}*/
 	
 </style>

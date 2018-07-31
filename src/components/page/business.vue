@@ -1,8 +1,10 @@
 <template>
 	<section>
-		<div v-show="!editVisible">
-		<div class="head clearfix">
+		<div v-if="!editVisible">
+		<div class="head clearfix editHead">
 			<span>业务管理</span>
+			<el-button type="primary" size="small" class='search' plain>搜索</el-button>
+			<el-input placeholder="请输入业务名称" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 		</div>
 		
 		<div class="content">
@@ -30,8 +32,9 @@
 			      </template>
 			    </el-table-column>
 			    <el-table-column property="name" label="业务名称" show-overflow-tooltip></el-table-column>
-			    <el-table-column property="rule" label="业务规则" width="380"></el-table-column>
+			    <el-table-column property="rule" label="业务规则" width="380"></el-table-column>			    
 			    <el-table-column property="principal" label="接口人" width="140" sortable></el-table-column>
+			    <el-table-column property="time" label="更新时间" width="140" sortable></el-table-column>
 			    <!--<el-table-column property="c" label="启用" width="140">
 			    	<template slot-scope="scope" >
 				    	<el-switch
@@ -62,7 +65,7 @@
 		</div>
 		
 		<transition name='fade' mode="out-in">
-			<div class="child-view" v-show="editVisible">
+			<div class="child-view" v-if="editVisible">
 	      		<business-edit :business-item.sync="selectedBus" @on-back="$_onBack"></business-edit>
 	    	</div>
 	    </transition>
@@ -76,6 +79,9 @@
 	export default{
 		data() {
 			return {
+				filters:{
+		      		name:''
+		      	},
 				listLoading:false,
 				editVisible:false,
 				selectedBus:null,
@@ -85,12 +91,14 @@
 			          name: '新员工入职提醒',
 			          principal: ['张三'],
 			          rule: '发送邮件的时间为员工入职后：一日',
+			          time:'2018-7-30 16:00',
 			          d: '入职提醒',
 			        },
 			        {
-			          name: 'XXX员工工作满一年贺卡',
+			          name: '工作满一年贺卡',
 			          principal: ['张三 ','李四'],
 			          rule: '发送邮件的时间为员工入职后：一年',
+			          time:'2018-7-30 16:00',
 			          d: '工作年限贺卡',
 			        },
 		        ],
@@ -135,6 +143,10 @@
 <style lang="scss" scoped="scoped">
 	
 	@import "src/assets/scss/common.scss";
+	
+	.editHead.head .el-input--small{
+		right: 100px;
+	}
 	
 </style>
 

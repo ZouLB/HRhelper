@@ -51,7 +51,7 @@ a{
 
 @font-face {
 	font-family:md;
-	src: url('/static/fonts/MillerDisplay-Light.otf');
+	src: url(../font/MillerDisplay-Light.otf);
 }
 
 
@@ -61,8 +61,21 @@ input:-webkit-autofill {
     -webkit-text-fill-color: #606266 !important;
 }
 
-/*sql*/
-
+/*滚动条*/
+::-webkit-scrollbar{
+    width: 6px;
+    height: 6px;
+    background-color: transparent;
+}
+::-webkit-scrollbar-track{
+    border-radius: 7px;
+    background-color: transparent;
+}
+::-webkit-scrollbar-thumb{
+    height: 20px;
+    border-radius: 7px;
+    background-color: #aaa;
+}
 
 .el-button.el-button--primary.is-plain{
 	/*color: #0085B5;
@@ -191,15 +204,16 @@ input:-webkit-autofill {
     padding-right: 34px;
 }
 
-.demo-table-expand {
+#busEdit .demo-table-expand {
     font-size: 0;
 }
-.demo-table-expand label {
+#busEdit .demo-table-expand label {
     width: 90px;
     color: #99a9bf;
 }
-.demo-table-expand .el-form-item {
+#busEdit .demo-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;
     width: 50%;
 }
+

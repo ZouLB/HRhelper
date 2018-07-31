@@ -7,11 +7,11 @@
 		</div>
 		
 		<div class="message">
-			<h3>{{emailItem.theme}}</h3>
+			<h3>{{emailItem.mail_name}}</h3>
 			<ul>
-				<li>收件人：{{emailItem.recipient}}&lt;zhangsan@bingosoft.net&gt;</li>
+				<li>收件人：{{emailItem.recipient}}&lt;{{emailItem.recipient_address}}&gt;</li>
 				<li>时间：{{emailItem.send_time}}</li>
-				<li>发件人：{{emailItem.interface}}&lt;zhangsan@bingosoft.net&gt;</li>
+				<li>发件人：{{emailItem.sender}}&lt;{{emailItem.sender_address}}&gt;</li>
 				<li>附件：</li>
 			</ul>
 		</div>
@@ -81,59 +81,6 @@
 
 <style lang="scss" scoped="scoped">
 	
-	section{
-		margin-bottom: 10px;
-		box-shadow: 0 0 5px #ccc;
-	}
-	.head{
-		padding: 9px 11px;
-    	border-bottom: 1px solid gainsboro;
-    	span {
-	        font: 16px/32px "微软雅黑";
-	        color: #666;
-	    }
-    	.el-button {
-	        float: right;
-	        margin-left: 10px;
-	    }
-	}
-	
-	.message{
-		background-color: #f2f2f2;
-		padding:10px 0 10px 25px;
-    	border-bottom: 1px solid gainsboro;
-		font: 14px/26px "微软雅黑";
-		color: #909399;
-		h3{
-			color: #303133;
-			font: 15px/29px "微软雅黑";
-		}
-	}
-	
-	.email-content{
-		width: 65%;
-		margin: 50px auto;
-		border: 1px solid gainsboro;
-	}
-	.letter-box{
-        width: 65%;
-		margin: 50px auto;
-        padding: 6px;
-        box-sizing: border-box;
-        background: linear-gradient(45deg,#f25953 12.5%,#fbfaf5 12.5%,#fbfaf5 25%,#5590d6 25%,#5590d6 37.5%,#fbfaf5 37.5%,#fbfaf5 50%,#f25953 50%,#f25953 62.5%,#fbfaf5 62.5%,#fbfaf5 75%,#5590d6 75%,#5590d6 87.5%,#fbfaf5 87.5%,#fbfaf5 100%);
-        background-size: 70px 70px;
-    }
-    .letter-border{
-        width: 100%;
-        height: 100%;
-   		padding: 20px 0;
-        background: #fbfaf5;
-        box-sizing: border-box;
-        text-align: center;
-        p{
-        	display: inline-block;
-        	text-align: left;
-        }
-    }
+	@import "src/assets/scss/_emailDetail.scss";
     
 </style>
