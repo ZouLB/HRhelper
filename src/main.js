@@ -1,20 +1,20 @@
-import Vue from 'vue'
+//import Vue from 'vue'
 import App from './App'
 import router from './router'
-import axios from 'axios';
+//import axios from 'axios';
 import { 
 	Pagination,
 	Dropdown,
-  	DropdownMenu,
-  	DropdownItem,
-  	Menu,
-  	Submenu,
-  	MenuItem,
-  	InputNumber,
+	DropdownMenu,
+	DropdownItem,
+	Menu,
+	Submenu,
+	MenuItem,
+	InputNumber,
 	Button, 
 	Table,
-  	TableColumn,
-  	DatePicker,
+	TableColumn,
+	DatePicker,
 	Select,
 	Option,
 	Form, 
@@ -22,6 +22,8 @@ import {
 	Checkbox, 
 	Input,
 	Loading,
+	MessageBox,
+  	Message,
 } from 'element-ui';
  
 import './assets/css/reset.css'
@@ -47,6 +49,15 @@ Vue.use(FormItem);
 Vue.use(Checkbox);
 Vue.use(Input);
 Vue.use(Loading);
+Vue.use(MessageBox);
+Vue.use(Message);
+
+export default function elementComponent () {
+  Vue.prototype.$alert = MessageBox.alert;
+Vue.prototype.$message = Message;
+Vue.prototype.$confirm = MessageBox.confirm;
+}
+
 
 Vue.prototype.$axios = axios;
 
