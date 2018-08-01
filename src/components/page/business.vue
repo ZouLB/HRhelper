@@ -56,8 +56,8 @@
               </el-table-column>-->
 			    <el-table-column property="operation" label="操作" width="80">
 			    	<template slot-scope="scope" >
-			    		<i class="el-icon-edit-outline" title="编辑" @click="checkBus(scope.row)"></i>
-			    		<i class="el-icon-delete" title="删除业务" @click="del(scope.$index, scope.row)"></i>
+			    		<i class="el-icon-edit-outline" title="编辑" @click="$_checkBus(scope.row)"></i>
+			    		<i class="el-icon-delete" title="删除业务" @click="$_del(scope.$index, scope.row)"></i>
 					</template>
 			    </el-table-column>
 			</el-table>
@@ -109,7 +109,7 @@
 		        this.currentRow = val;
 		    },
 		    //删除
-	    	del:function(index,row){
+	    	$_del:function(index,row){
 	    		this.$confirm('删除后将不能恢复，确认删除业务吗?', '提示', {
 					type: 'warning'
 				}).then(() => {
@@ -123,7 +123,7 @@
 	    	$_onBack: function(resultUserInfo) {
 		      	this.editVisible = false;
 		    },
-	    	checkBus(item){
+	    	$_checkBus(item){
 				this.editVisible = true;
 				this.selectedBus = item;
 		    },
@@ -142,7 +142,7 @@
 
 <style lang="scss" scoped="scoped">
 	
-	@import "src/assets/scss/common.scss";
+	@import "src/assets/scss/_common.scss";
 	
 	.editHead.head .el-input--small{
 		right: 100px;

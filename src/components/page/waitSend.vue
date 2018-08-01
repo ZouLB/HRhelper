@@ -4,8 +4,8 @@
 			<!--操作栏-->
 			<div class="head clearfix">
 				<span>待发送文件<i class="el-icon-arrow-right"></i>{{table_title}}</span>
-				<el-button type="danger" size="small" plain @click="batchCancel">取消发送</el-button>
-				<el-button type="primary" size="small" @click="getData()" class='search' plain>搜索</el-button>
+				<el-button type="danger" size="small" plain @click="$_batchCancel">取消发送</el-button>
+				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<!--<el-select v-model="filters.sortSearch" clearable placeholder="请选择类别">
 				    <el-option
 				      v-for="item in sort"
@@ -39,7 +39,7 @@
 				    size="mini"
 				    tooltip-effect="dark"
 				    @current-change="handleCurrentChange"
-				    @selection-change="$_handleSelectionChange"
+				    @selection-change="handleSelectionChange"
 				    style="width: 100%;">
 				    <el-table-column type="selection" width="50"></el-table-column>
 				    <el-table-column property="mail_name" label="邮件主题" show-overflow-tooltip></el-table-column>
@@ -50,8 +50,8 @@
 				    <el-table-column property="send_time" label="发送时间" width="150" sortable></el-table-column>
 				    <el-table-column property="operation" label="操作" width="80">
 				    	<template slot-scope="scope" >
-				    		<i class="el-icon-hr-mail" title="查看邮件" @click="checkDetail(scope.row)"></i>
-				    		<i class="el-icon-hr-cancel" title="取消发送" @click="cancel(scope.$index, scope.row)"></i>
+				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
+				    		<i class="el-icon-hr-cancel" title="取消发送" @click="$_cancel(scope.$index, scope.row)"></i>
 						</template>
 				    </el-table-column>
 				</el-table>
@@ -143,10 +143,10 @@
 	    	handleCurrentChange(val) {
 		        this.currentRow = val;
 		    },
-		    $_handleSelectionChange(selection) {
+		    handleSelectionChange(selection) {
 		      this.tableSelect = selection;
 		    },
-		    checkDetail(item){
+		    $_checkDetail(item){
 				this.detailShow = true;
 				this.selectedEmail = item;
 		    },
@@ -154,17 +154,17 @@
 		      	this.detailShow = false;
 		    },
 		    //初始化
-		    initialize() {
+		    $_initialize() {
 		    	this.table_title = this.$route.params.title;
 		   		if(this.$route.params.id == 0){
 		   			this.sortId = "";
 		   		}else{
 		   			this.sortId = this.$route.params.id;
 		   		}
-		   		this.getData();
+		   		this.$_getData();
 		    },
 		    //获取数据
-		    getData() {
+		    $_getData() {
 				let para = {
 					page: this.page,
 					pageSize: this.pageSize,
@@ -179,7 +179,7 @@
 				});
 			},
 	    	//取消发送
-	    	cancel:function(index,row){
+	    	$_cancel:function(index,row){
 	    		this.$confirm('取消后将不能恢复，确认取消发送吗?', '提示', {
 					type: 'warning'
 				}).then(() => {
@@ -191,7 +191,14 @@
 							message: '取消成功',
 							type: 'success'
 						});
-						this.getData();
+						this.$_getData();
+						//不调用接口删除的方式
+//						let tmpIndex = this.tableData.findIndex(function(item) {
+//					        return item.id == row.id;
+//					    });
+//					    if (tmpIndex > -1) {
+//					        this.tableData.removeAt(tmpIndex);
+//					    } 
 					});
 					
 				}).catch(() => {
@@ -199,7 +206,7 @@
 				});
 	    	},
 	    	//批量取消
-	    	batchCancel() {
+	    	$_batchCancel() {
 	    		var self = this;
 			    if (this.tableSelect.length == 0) {
 			        this.$alert("请选择需要取消发送的邮件", "提示", {
@@ -221,7 +228,7 @@
 							message: '取消发送成功',
 							type: 'success'
 						});
-						this.getData();
+						this.$_getData();
 					});
 			    })
 			    .catch(() => {});
@@ -230,20 +237,20 @@
 	    	handleCurrent(val) {
 	    		this.currentPage = val;//页数高亮
 				this.page = val;
-				this.getData();
+				this.$_getData();
 			},
 			handleSizeChange(val) {
 				this.pageSize = val
-				this.getData();
+				this.$_getData();
 		    },
 	    	
 	    },
 	    mounted(){
-	   		this.initialize();
+	   		this.$_initialize();
 		},
 		watch:{
 	   		'$route' (to, from){
-				this.initialize();
+				this.$_initialize();
 	   			this.detailShow = false;
 	   		},
 	    },
@@ -255,7 +262,7 @@
 
 <style scoped="scoped" lang="scss">
 	
-	@import "src/assets/scss/common.scss";
-	@import "src/assets/scss/animation.scss";
+	@import "src/assets/scss/_common.scss";
+	/*@import "src/assets/scss/animation.scss";*/
 	
 </style>

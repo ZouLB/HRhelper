@@ -15,6 +15,7 @@ import {
 	Table,
 	TableColumn,
 	DatePicker,
+	TimePicker,
 	Select,
 	Option,
 	Form, 
@@ -26,7 +27,6 @@ import {
   	Message,
 } from 'element-ui';
  
-import './assets/css/reset.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/icon/iconfont.css'
 
@@ -42,6 +42,7 @@ Vue.use(Button);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(DatePicker);
+Vue.use(TimePicker);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Form);
@@ -49,15 +50,12 @@ Vue.use(FormItem);
 Vue.use(Checkbox);
 Vue.use(Input);
 Vue.use(Loading);
-Vue.use(MessageBox);
-Vue.use(Message);
+Vue.component(MessageBox.name, MessageBox);
+Vue.component(Message.name, Message);
 
-export default function elementComponent () {
-  Vue.prototype.$alert = MessageBox.alert;
-Vue.prototype.$message = Message;
+Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;
-}
-
+Vue.prototype.$message = Message;
 
 Vue.prototype.$axios = axios;
 

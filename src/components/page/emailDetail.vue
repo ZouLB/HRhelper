@@ -3,7 +3,7 @@
 		<div class="head clearfix">
 			<span>邮件详情</span>
 			<el-button type="primary" size="small" plain @click="$_onBack">返回</el-button>
-			<el-button type="danger" size="small" plain @click="del">删除</el-button>
+			<el-button type="danger" size="small" plain @click="$_del">删除</el-button>
 		</div>
 		
 		<div class="message">
@@ -48,14 +48,11 @@
 		    }
 		},
 	    methods: {
-	    	goBack(){
-	    		this.$router.go(-1);
-	    	},
 	    	$_onBack: function() {
 		      this.$emit("on-back", null);
 		    },
 	    	//取消发送
-	    	del:function(index,row){
+	    	$_del:function(index,row){
 	    		this.$confirm('删除后将不能恢复，确认删除该邮件吗?', '提示', {
 					type: 'warning'
 				}).then(() => {

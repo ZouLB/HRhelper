@@ -5,9 +5,9 @@
 			<!--操作栏-->
 			<div class="head clearfix">
 				<span>已发送文件<i class="el-icon-arrow-right"></i>{{table_title}}</span>
-				<el-button type="danger" size="small" plain @click="batchDel">批量删除</el-button>
-				<el-button type="primary" size="small" @click="getData()" class='search' plain>搜索</el-button>
-				<!--<input type="text" placeholder="搜索" v-model="filters.name" @keyup="getData()"/>-->
+				<el-button type="danger" size="small" plain @click="$_batchDel">批量删除</el-button>
+				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
+				<!--<input type="text" placeholder="搜索" v-model="filters.name" @keyup="$_getData()"/>-->
 				<el-input placeholder="请输入收件人" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-date-picker
 			      v-model="filters.date"
@@ -33,7 +33,7 @@
 				    size="mini"
 				    tooltip-effect="dark"
 				    @current-change="handleCurrentChange"
-				    @selection-change="$_handleSelectionChange"
+				    @selection-change="handleSelectionChange"
 				    style="width: 100%;">
 				    <el-table-column type="selection" width="50"></el-table-column>
 				    <el-table-column property="mail_name" label="邮件主题" show-overflow-tooltip></el-table-column>
@@ -44,8 +44,8 @@
 				    <el-table-column property="send_time" label="发送时间" width="150" sortable></el-table-column>
 				    <el-table-column property="operation" label="操作" width="80">
 				    	<template slot-scope="scope" >
-				    		<i class="el-icon-hr-mail" title="查看邮件" @click="checkDetail(scope.row)"></i>
-				    		<i class="el-icon-delete" title="删除" @click="del(scope.$index, scope.row)"></i>
+				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
+				    		<i class="el-icon-delete" title="删除" @click="$_del(scope.$index, scope.row)"></i>
 						</template>
 				    </el-table-column>
 				</el-table>
@@ -127,21 +127,21 @@
 	    	handleCurrentChange(val) {
 		        this.currentRow = val;
 		    },
-		    $_handleSelectionChange(selection) {
+		    handleSelectionChange(selection) {
 		      this.tableSelect = selection;
 		    },
 		    //初始化
-		    initialize() {
+		    $_initialize() {
 		    	this.table_title = this.$route.params.title;
 		   		if(this.$route.params.id == 0){
 		   			this.sortId = "";
 		   		}else{
 		   			this.sortId = this.$route.params.id;
 		   		}
-		   		this.getData();
+		   		this.$_getData();
 		    },
 		    //进入邮件详情
-		    checkDetail(item){
+		    $_checkDetail(item){
 				this.detailShow = true;
 				this.selectedEmail = item;
 		    },
@@ -150,7 +150,7 @@
 		      	this.detailShow = false;
 		    },
 		    //获取数据
-		    getData() {
+		    $_getData() {
 				let para = {
 					page: this.page,
 					pageSize: this.pageSize,
@@ -165,7 +165,7 @@
 				});
 			},
 	    	//删除
-	    	del:function(index,row){
+	    	$_del:function(index,row){
 	    		this.$confirm('删除后将不能恢复，确认删除邮件吗?', '提示', {
 					type: 'warning'
 				}).then(() => {
@@ -177,7 +177,14 @@
 							message: '删除成功',
 							type: 'success'
 						});
-						this.getData();
+						this.$_getData();
+						//不调用接口删除的方式
+//						let tmpIndex = this.tableData.findIndex(function(item) {
+//					        return item.id == row.id;
+//					    });
+//					    if (tmpIndex > -1) {
+//					        this.tableData.removeAt(tmpIndex);
+//					    } 
 					});
 					
 				}).catch(() => {
@@ -185,7 +192,7 @@
 				});
 	    	},
 	    	//批量删除
-	    	batchDel() {
+	    	$_batchDel() {
 	    		var self = this;
 			    if (this.tableSelect.length == 0) {
 			        this.$alert("请选择需要删除的邮件", "提示", {
@@ -194,7 +201,7 @@
 			        });
 			        return;
 			    }
-			    var ids = this.tableSelect.map(item => item.id).toString();
+			    var ids = this.tableSelect.map(item => item.id).toString();//用逗号隔开的字符串
 			    this.$confirm("删除后将不能恢复，确认删除所选邮件吗?", "提示", {
 			        type: "warning"
 			    })
@@ -207,7 +214,11 @@
 							message: '删除成功',
 							type: 'success'
 						});
-						this.getData();
+						this.$_getData();
+						
+//						let temIndex = this.tableData.findIndex(function(item){
+//							return item.id = this.tableSelect.id
+//						})
 					});
 			    })
 			    .catch(() => {});
@@ -216,20 +227,20 @@
 	    	handleCurrent(val) {
 	    		this.currentPage = val;//页数高亮
 				this.page = val;
-				this.getData();
+				this.$_getData();
 			},
 			handleSizeChange(val) {
 				this.pageSize = val;
-				this.getData();
+				this.$_getData();
 		    },
 	    	
 	    },
 	    mounted(){
-	   		this.initialize();
+	   		this.$_initialize();
 		},
 		watch:{
 	   		'$route' (to, from){
-	   			this.initialize();
+	   			this.$_initialize();
 	   			this.detailShow = false;
 	   		},
 	  	},
@@ -241,7 +252,7 @@
 
 <style scoped="scoped" lang="scss">
 	
-	@import "src/assets/scss/common.scss";
-	@import "src/assets/scss/animation.scss";
+	@import "src/assets/scss/_common.scss";
+	/*@import "src/assets/scss/animation.scss";*/
 	
 </style>

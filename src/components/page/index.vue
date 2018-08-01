@@ -86,7 +86,7 @@
 
 <style scoped="scoped" lang="scss">
 
-	@import "src/assets/scss/animation.scss";
+	/*@import "src/assets/scss/animation.scss";*/
 	@import "src/assets/scss/_index.scss";
 	
 </style>

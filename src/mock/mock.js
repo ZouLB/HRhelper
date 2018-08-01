@@ -100,7 +100,7 @@ export default {
       });
     });
 
-    //删除用户
+    //删除邮件
     mock.onGet('/user/remove').reply(config => {
       let { id } = config.params;
       _Mail = _Mail.filter(u => u.id !== id);
@@ -114,10 +114,10 @@ export default {
       });
     });
 
-    //批量删除
+    //批量删除邮件
     mock.onGet('/user/batchremove').reply(config => {
       let { ids } = config.params;
-      ids = ids.split(',');
+      ids = ids.split(',');//把字符串变成数组
       _Mail = _Mail.filter(u => !ids.includes(u.id));
       return new Promise((resolve, reject) => {
         setTimeout(() => {

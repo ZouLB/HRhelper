@@ -6,7 +6,7 @@
       </div>
       
       <div class="exit" v-show="exitShow">
-      	<el-dropdown trigger="hover">
+      	<el-dropdown trigger="click">
 					<span class="el-dropdown-link userinfo-inner"><img src="../../assets/img/img-head.png" />{{userName}}<i class="el-icon-caret-bottom"></i></span>
 					<el-dropdown-menu slot="dropdown">
 						<el-dropdown-item @click.native="exitLogin"><i class="el-icon-hr-exit"></i>退出登录</el-dropdown-item>

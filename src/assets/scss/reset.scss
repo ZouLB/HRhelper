@@ -1,0 +1,159 @@
+html{
+    color:#000;
+    background:#FFF;
+}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,footer,article,aside,header,section,nav,figure,figcaption,hgroup{
+    margin:0;
+    padding:0;
+}table{
+    border-collapse:collapse;
+    border-spacing:0;
+}fieldset,img{
+    border:0;
+}address,caption,cite,code,dfn,em,strong,th,var{
+    font-style:normal;
+    font-weight:normal;
+}ol,ul{
+    list-style:none;
+}caption,th{
+    text-align:left;
+}h1,h2,h3,h4,h5,h6{
+    font-size:100%;
+    font-weight:normal;
+}q:before,q:after{
+    content:'';
+}abbr,acronym{
+    border:0;
+    font-variant:normal;
+}sup{
+    vertical-align:text-top;
+}sub{
+    vertical-align:text-bottom;
+}input,textarea,select{
+    font-family:inherit;
+    font-size:inherit;
+    font-weight:inherit;
+    *font-size:100%;
+}legend{
+    color:#000;
+}
+
+a{
+    text-decoration: none;
+}
+
+.clearfix:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.clearfix{
+    zoom: 1;
+}
+
+@font-face {
+    font-family:md;
+    src: url('~@/assets/font/MillerDisplay-Light.otf');
+}
+
+/*解决输入框变黄色*/
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset !important;
+    -webkit-text-fill-color: #606266 !important;
+}
+
+/*滚动条*/
+::-webkit-scrollbar{
+    width: 6px;
+    height: 6px;
+    background-color: transparent;
+}
+::-webkit-scrollbar-track{
+    border-radius: 7px;
+    background-color: transparent;
+}
+::-webkit-scrollbar-thumb{
+    height: 20px;
+    border-radius: 7px;
+    background-color: #aaa;
+}
+
+.el-table th:nth-last-of-type(2)>.cell,
+.el-table th:nth-last-of-type(3)>.cell{
+    text-align: center !important;
+}
+
+.el-table__row td:nth-last-of-type(1),
+.el-table__row td:nth-last-of-type(2){
+    text-align: center;
+}
+
+.el-pagination{
+    position: absolute;
+    right: 10px;
+    bottom: 17px;
+}
+
+.right .el-table--mini th{
+    padding:2px 0;
+}
+
+.right .el-pagination .el-select .el-input{
+    margin: 0;
+}
+.right .el-pagination .el-select .el-input .el-input__inner{
+    height: 24px;
+}
+
+.el-table .cell{
+    line-height: 26px !important;
+}
+
+.el-select .el-input__inner {
+    height: 32px;
+}
+.el-select .el-input__icon{
+    line-height: 32px;
+}
+
+/*登录*/
+.loginBox .el-input__inner{
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+.loginBox .el-form-item__error{
+    left: 70px;
+}
+
+.loginBox .el-checkbox__label{
+    color: #C0C4CC;
+    font-family: md;
+}
+            
+.loginBox .el-checkbox{
+    margin-left: 17px;
+}
+.loginBox .el-checkbox__input.is-checked+.el-checkbox__label{
+    color: white;
+}
+
+
+.el-input-number.is-controls-right .el-input__inner{
+    padding-left: 4px;
+    padding-right: 34px;
+}
+
+.demo-table-expand {
+    font-size: 0;
+}
+.demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+}
+

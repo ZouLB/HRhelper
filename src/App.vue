@@ -16,8 +16,9 @@
 	}
 </script>
 
-<style scoped="scoped" lang="scss">
+<style lang="scss">
 
-	@import "src/assets/scss/animation.scss";
+	/*@import "src/assets/scss/animation.scss";*/
+	@import "src/assets/scss/style.scss";
 	
 </style>
