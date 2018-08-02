@@ -1,7 +1,8 @@
-//import Vue from 'vue'
 import App from './App'
+//import Vue from 'vue'
 import router from './router'
 //import axios from 'axios';
+
 import { 
 	Pagination,
 	Dropdown,
@@ -24,7 +25,7 @@ import {
 	Input,
 	Loading,
 	MessageBox,
-  	Message,
+	Message,
 } from 'element-ui';
  
 import 'element-ui/lib/theme-chalk/index.css'

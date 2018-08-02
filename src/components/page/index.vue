@@ -18,7 +18,7 @@
 						<i class="el-icon-hr-sent"></i>
 						<span slot="title">已发送邮件</span>
 					</template>
-					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/sent/'+v+'/'+i">
+					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/sent/'+i">
 						{{v}}
 					</el-menu-item>
 				</el-submenu>
@@ -27,7 +27,7 @@
 						<i class="el-icon-hr-sent-"></i>
 						<span slot="title">待发送邮件</span>
 					</template>
-					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+v+'/'+i">
+					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+i">
 					<!--<i class="el-submenu__icon-arrow el-icon-arrow-right"></i>-->
 					{{v}}
 					</el-menu-item>
@@ -64,7 +64,7 @@
 				isCollapse: false,
 				isRouter:true,
 				title:['所有分类','入职提醒','绩效表提醒','转正提醒','续签合同','工作年限贺卡'],
-				defaultActive:"/index/sent/所有分类/0"
+				defaultActive:"/index/sent/0"
 			}
 		},
     	methods: {

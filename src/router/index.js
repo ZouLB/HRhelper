@@ -22,9 +22,9 @@ export default new Router({
 			path:'/index',
 			component:index,
 				children:[
-					{path: '/index', redirect: '/index/sent/所有分类/0' },
-					{path:'sent/:title/:id',name:sent,component:sent},
-					{path:'waitSend/:title/:id',name:waitSend,component:waitSend},
+					{path: '/index', redirect: '/index/sent/0' },
+					{path:'sent/:index',name:sent,component:sent},
+					{path:'waitSend/:index',name:waitSend,component:waitSend},
 					{path:'business',component:business},
 				]
 		}

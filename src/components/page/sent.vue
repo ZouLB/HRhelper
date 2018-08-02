@@ -120,7 +120,8 @@
 	        currentPage:1,
 	        detailShow:false,
 	        selectedEmail:null,
-	        sortId:null
+	        sortId:null,
+	        title:['所有分类','入职提醒','绩效表提醒','转正提醒','续签合同','工作年限贺卡'],
 	      }
 	    },
 	    methods: {
@@ -132,7 +133,8 @@
 		    },
 		    //初始化
 		    $_initialize() {
-		    	this.table_title = this.$route.params.title;
+		    	let index = this.$route.params.index;
+		    	this.table_title = this.title[index];
 		   		if(this.$route.params.id == 0){
 		   			this.sortId = "";
 		   		}else{
