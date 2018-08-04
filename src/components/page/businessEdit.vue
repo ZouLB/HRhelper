@@ -73,7 +73,7 @@
 		        year:0,
 		        month:0,
 		        day:1,
-		        value3: new Date(2016, 9, 10, 18, 40),
+		        value3: "18:40",
 		        dynamicValidateForm: {
 			        domains: [{
 			            value: ''
