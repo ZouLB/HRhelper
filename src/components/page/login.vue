@@ -33,7 +33,7 @@
     data() {
       return {
         logining: false,
-        bg:require('../../assets/img/bg1.jpg'),
+        bg:require('../../assets/img/bg.jpg'),
         ruleForm: {
           account: 'Zoulb@bingosoft.net',
           checkPass: 'admin'

@@ -11,6 +11,7 @@ const index = resolve => require(['@/components/page/index'],resolve);
 const sent = resolve => require(['@/components/page/sent'],resolve);
 const waitSend = resolve => require(['@/components/page/waitSend'],resolve);
 const business = resolve => require(['@/components/page/business'],resolve);
+const templateWrite = resolve => require(['@/components/page/templateWrite'],resolve);
 
 Vue.use(Router)
 
@@ -26,6 +27,7 @@ export default new Router({
 					{path:'sent/:index',name:sent,component:sent},
 					{path:'waitSend/:index',name:waitSend,component:waitSend},
 					{path:'business',component:business},
+					{path:'templateWrite',component:templateWrite},
 				]
 		}
   ]

@@ -11,7 +11,7 @@
 			<ul>
 				<li>收件人：{{emailItem.recipient}}&lt;{{emailItem.recipient_address}}&gt;</li>
 				<li>时间：{{emailItem.send_time}}</li>
-				<li>发件人：{{emailItem.sender}}&lt;{{emailItem.sender_address}}&gt;</li>
+				<li>接口人：{{emailItem.sender}}&lt;{{emailItem.sender_address}}&gt;</li>
 				<li>附件：</li>
 			</ul>
 		</div>

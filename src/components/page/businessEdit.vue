@@ -6,7 +6,7 @@
 			<el-button type="primary" size="small" @click="$_onSave" :loading="saveLoading">保存</el-button>
 		</div>
 		
-		<el-form :model="businessItem" label-width="80px" ref="businessItem" :rules="rules">
+		<el-form :model="businessItem" label-width="90px" ref="businessItem" :rules="rules">
 			<el-form-item label="业务名称" prop="name">
 				<el-input v-model="businessItem.name" auto-complete="off" placeholder="请输入业务名称"></el-input>
 			</el-form-item>
@@ -25,19 +25,35 @@
 			
 			<el-form-item
 			    v-for="(domain, index) in dynamicValidateForm.domains"
-			    :label="'规则' + index"
-			    :key="domain.key"
-			    :prop="'domains.' + index + '.value'"
-			    prop="rule">
-				<!--<span>入职后：</span>-->
-				<el-input-number v-model="year" size="small" controls-position="right" :min="0" :max="10"></el-input-number>&nbsp;年&nbsp;
-				<el-input-number v-model="month" size="small" controls-position="right" :min="0" :max="11"></el-input-number>&nbsp;月&nbsp;
-				<el-input-number v-model="day" size="small" controls-position="right" :min="1" :max="31"></el-input-number>&nbsp;日&nbsp;
-			    <el-button v-if="index==0" size="small" @click="addDomain">新增</el-button>
-			    <el-button v-if="index>0" size="small" @click.prevent="removeDomain(domain)">删除</el-button>
+			    :label="'发送时间' + (index+1)"
+			    :key="domain.key">
+			    <el-radio-group v-model="value">
+			      	<el-radio label="入职后"></el-radio>
+			      	<el-radio label="转正前"></el-radio>
+			      	<el-radio label="离职前"></el-radio>
+			    </el-radio-group>
+			    
+			    </br>
+			    
+			    <!--<el-select v-model="value" placeholder="请选择" class="selectTime">
+				    <el-option
+				      v-for="item in options"
+				      :key="item.value"
+				      :label="item.label"
+				      :value="item.value">
+				    </el-option>
+				</el-select>-->
+				<el-input-number v-model="year" size="small" controls-position="right" :min="0" :max="10"></el-input-number>年&nbsp;
+				<el-input-number v-model="month" size="small" controls-position="right" :min="0" :max="11"></el-input-number>月&nbsp;
+				<el-input-number v-model="day" size="small" controls-position="right" :min="1" :max="31"></el-input-number>日&nbsp;&nbsp;
+				<el-input v-model="day" size="small" class="sentTime"></el-input>时&nbsp;
+				<el-input v-model="day" size="small" class="sentTime"></el-input>分&nbsp;
+			    <el-button type="text" v-if="index==0" size="small" @click="addDomain">新增</el-button>
+			    <el-button type="text" v-if="index>0" size="small" @click.prevent="removeDomain(domain)" class="delBtn">删除</el-button>
+
 			</el-form-item>
 			
-			<el-form-item label="发送时间">
+			<!--<el-form-item label="当天发送时间">
 				<el-time-picker
 			    arrow-control
 			    v-model="value3"
@@ -47,7 +63,7 @@
 			    }"
 			    placeholder="请选择时间">
 			 </el-time-picker>
-			</el-form-item>
+			</el-form-item>-->
 			
 			<el-form-item label="业务描述" prop="describe">
 				<el-input type="textarea" :rows="5" auto-complete="off"></el-input>
@@ -73,13 +89,14 @@
 		        year:0,
 		        month:0,
 		        day:1,
-		        value3: new Date(2016, 9, 10, 18, 40),
+		        value3: new Date(18, 40),
 		        dynamicValidateForm: {
 			        domains: [{
 			            value: ''
 			        }],
 			        email: ''
-			    }
+			    },
+			    value:"入职后"
 	      	}
 	    },
 	    props: {
@@ -159,16 +176,26 @@
         position: absolute;
         left: 200px;
         top: 120px;
-        max-width: 510px;
-        .el-select{
-            width: 430px;
+        max-width: 555px;
+        .el-select,.el-input,.el-textarea{
+            width: 420px;
+        }
+        .selectTime{
+        	width: 100px;
         }
         .el-input-number--small{
-        	width: 70px;
+        	width: 67px;
         }
         .el-form-item span{
         	color: #666;
         }
+        .sentTime.el-input--small{
+		    display: inline;
+		}
+		
+		.delBtn{
+			color: #F56C6C;
+		}
 		        
     }
     
