@@ -43,27 +43,25 @@
 				      :value="item.value">
 				    </el-option>
 				</el-select>-->
-				<el-input-number v-model="year" size="small" controls-position="right" :min="0" :max="10"></el-input-number>年&nbsp;
-				<el-input-number v-model="month" size="small" controls-position="right" :min="0" :max="11"></el-input-number>月&nbsp;
-				<el-input-number v-model="day" size="small" controls-position="right" :min="1" :max="31"></el-input-number>日&nbsp;&nbsp;
-				<el-input v-model="day" size="small" class="sentTime"></el-input>时&nbsp;
-				<el-input v-model="day" size="small" class="sentTime"></el-input>分&nbsp;
+				<el-input-number v-model="year" size="small" controls-position="right" :min="0" :max="10"></el-input-number>&nbsp;年&nbsp;
+				<el-input-number v-model="month" size="small" controls-position="right" :min="0" :max="11"></el-input-number>&nbsp;月&nbsp;
+				<el-input-number v-model="day" size="small" controls-position="right" :min="1" :max="31"></el-input-number>&nbsp;日&nbsp;&nbsp;
+				<!--<el-input v-model="day" size="small" class="sentTime"></el-input>时&nbsp;
+				<el-input v-model="day" size="small" class="sentTime"></el-input>分&nbsp;-->
+				<el-time-select
+				  v-model="value3"
+				  class="sentTime"
+				  :picker-options="{
+				    start: '08:30',
+				    step: '00:15',
+				    end: '19:00'
+				  }"
+				  placeholder="请选择">
+				</el-time-select>
 			    <el-button type="text" v-if="index==0" size="small" @click="addDomain">新增</el-button>
 			    <el-button type="text" v-if="index>0" size="small" @click.prevent="removeDomain(domain)" class="delBtn">删除</el-button>
 
 			</el-form-item>
-			
-			<!--<el-form-item label="当天发送时间">
-				<el-time-picker
-			    arrow-control
-			    v-model="value3"
-			    :picker-options="{
-			      selectableRange: '09:00:00 - 19:00:00',
-			      format: 'HH:mm'
-			    }"
-			    placeholder="请选择时间">
-			 </el-time-picker>
-			</el-form-item>-->
 			
 			<el-form-item label="业务描述" prop="describe">
 				<el-input type="textarea" :rows="5" auto-complete="off"></el-input>
@@ -85,11 +83,13 @@
 		        	rule: [{ required: true, message: '请输入业务规则', trigger: 'change' }],
 		        },
 		        saveLoading:false,
-		        hrForm:['张三','李四','王五'],
+		        hrForm:['张三','李四','王五'],//获取所有人事部的HR
 		        year:0,
 		        month:0,
 		        day:1,
-		        value3: new Date(18, 40),
+		        hours:18,
+		        minutes:15,
+		        value3: null,
 		        dynamicValidateForm: {
 			        domains: [{
 			            value: ''
@@ -164,7 +164,22 @@
 		          key: Date.now()
 		        });
 		    }
-	   },
+	  	},
+	  	mounted(){
+	  		this.value3 = this.hours +':'+ this.minutes;
+	  	},
+	  	watch:{
+	  		value3(){
+	  			let arr = this.value3.split(':');
+	  			this.hours = arr[0];
+	  			this.minutes = arr[1];
+	  		}
+	  	},
+//	  	updated(){
+//	  		console.log(this.value3);
+//	  		console.log(this.hours);
+//	  		console.log(this.minutes);
+//	  	}
 	}
 </script>
 
@@ -189,8 +204,11 @@
         .el-form-item span{
         	color: #666;
         }
-        .sentTime.el-input--small{
+        /*.sentTime.el-input--small{
 		    display: inline;
+		}*/
+		.sentTime.el-date-editor{
+			width: 105px;
 		}
 		
 		.delBtn{
