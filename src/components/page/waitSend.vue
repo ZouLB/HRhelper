@@ -75,8 +75,10 @@
 </template>
 
 <script>
+	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
-	import { getMailPage, removeMail, batchRemoveMail } from '../../api/api';
+//	, removeMail, batchRemoveMail 
+	import { getMailPage} from '../../api/api';
 	
   	export default {
 	    data() {
@@ -173,6 +175,19 @@
 					name: this.filters.name,
 					sort: this.sortId 
 				};
+//				let para = {
+//					pageNum: this.page,
+//					pageSize: this.pageSize,
+//					status:1,
+//					recipent: this.filters.name,
+//					operationId: this.sortId,
+//					satrtTime:"",
+//					endTime:""
+//				};
+//				if(this.filters.date!=''){
+//					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+//					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+//				}
 				this.listLoading = true;
 				getMailPage(para).then((res) => {
 					this.total = res.data.total;
@@ -181,60 +196,60 @@
 				});
 			},
 	    	//取消发送
-	    	$_cancel:function(index,row){
-	    		this.$confirm('取消后将不能恢复，确认取消发送吗?', '提示', {
-					type: 'warning'
-				}).then(() => {
-					this.listLoading = true;
-					let para = { id: row.id };
-					removeMail(para).then((res) => {
-						this.listLoading = false;
-						this.$message({
-							message: '取消成功',
-							type: 'success'
-						});
-						this.$_getData();
-						//不调用接口删除的方式
-//						let tmpIndex = this.tableData.findIndex(function(item) {
-//					        return item.id == row.id;
-//					    });
-//					    if (tmpIndex > -1) {
-//					        this.tableData.removeAt(tmpIndex);
-//					    } 
-					});
-					
-				}).catch(() => {
-					
-				});
-	    	},
-	    	//批量取消
-	    	$_batchCancel() {
-	    		var self = this;
-			    if (this.tableSelect.length == 0) {
-			        this.$alert("请选择需要取消发送的邮件", "提示", {
-			            confirmButtonText: "确定",
-			            type: "info"
-			        });
-			        return;
-			    }
-			    var ids = this.tableSelect.map(item => item.id).toString();
-			    this.$confirm("取消后将不能恢复，确认取消发送所选邮件吗?", "提示", {
-			        type: "warning"
-			    })
-			    .then(() => {
-			    	this.listLoading = true;
-					let para = { ids: ids };
-					batchRemoveMail(para).then((res) => {
-						this.listLoading = false;
-						this.$message({
-							message: '取消发送成功',
-							type: 'success'
-						});
-						this.$_getData();
-					});
-			    })
-			    .catch(() => {});
-	    	},
+//	    	$_cancel:function(index,row){
+//	    		this.$confirm('取消后将不能恢复，确认取消发送吗?', '提示', {
+//					type: 'warning'
+//				}).then(() => {
+//					this.listLoading = true;
+//					let para = { id: row.id };
+//					removeMail(para).then((res) => {
+//						this.listLoading = false;
+//						this.$message({
+//							message: '取消成功',
+//							type: 'success'
+//						});
+//						this.$_getData();
+//						//不调用接口删除的方式
+////						let tmpIndex = this.tableData.findIndex(function(item) {
+////					        return item.id == row.id;
+////					    });
+////					    if (tmpIndex > -1) {
+////					        this.tableData.removeAt(tmpIndex);
+////					    } 
+//					});
+//					
+//				}).catch(() => {
+//					
+//				});
+//	    	},
+//	    	//批量取消
+//	    	$_batchCancel() {
+//	    		var self = this;
+//			    if (this.tableSelect.length == 0) {
+//			        this.$alert("请选择需要取消发送的邮件", "提示", {
+//			            confirmButtonText: "确定",
+//			            type: "info"
+//			        });
+//			        return;
+//			    }
+//			    var ids = this.tableSelect.map(item => item.id).toString();
+//			    this.$confirm("取消后将不能恢复，确认取消发送所选邮件吗?", "提示", {
+//			        type: "warning"
+//			    })
+//			    .then(() => {
+//			    	this.listLoading = true;
+//					let para = { ids: ids };
+//					batchRemoveMail(para).then((res) => {
+//						this.listLoading = false;
+//						this.$message({
+//							message: '取消发送成功',
+//							type: 'success'
+//						});
+//						this.$_getData();
+//					});
+//			    })
+//			    .catch(() => {});
+//	    	},
 	    	//分页
 	    	handleCurrent(val) {
 	    		this.currentPage = val;//页数高亮

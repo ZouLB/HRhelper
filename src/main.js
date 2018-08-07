@@ -77,8 +77,8 @@ import 'quill/dist/quill.bubble.css'
 
 
 //mock
-import Mock from './mock';
-Mock.bootstrap();
+//import Mock from './mock';
+//Mock.bootstrap();
 
 Vue.config.productionTip = false
 

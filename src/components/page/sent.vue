@@ -71,8 +71,10 @@
 </template>
 
 <script>
+	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
-	import { getMailPage, removeMail, batchRemoveMail } from '../../api/api';
+	//, removeMail, batchRemoveMail 
+	import { getMailPage} from '../../api/api';
 	
   	export default {
 	    data() {
@@ -154,77 +156,85 @@
 		    //获取数据
 		    $_getData() {
 				let para = {
-					page: this.page,
+					pageNum: this.page,
 					pageSize: this.pageSize,
-					name: this.filters.name,
-					sort: this.sortId 
+					status:1,
+					recipent: this.filters.name,
+					operationId: this.sortId,
+					satrtTime:"",
+					endTime:""
 				};
+				if(this.filters.date!=''){
+					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+				}
 				this.listLoading = true;
 				getMailPage(para).then((res) => {
+					console.log(res);
 					this.total = res.data.total;
 					this.tableData = res.data.users;
 					this.listLoading = false;
 				});
 			},
 	    	//删除
-	    	$_del:function(index,row){
-	    		this.$confirm('删除后将不能恢复，确认删除邮件吗?', '提示', {
-					type: 'warning'
-				}).then(() => {
-					this.listLoading = true;
-					let para = { id: row.id };
-					removeMail(para).then((res) => {
-						this.listLoading = false;
-						this.$message({
-							message: '删除成功',
-							type: 'success'
-						});
-						this.$_getData();
-						//不调用接口删除的方式
-//						let tmpIndex = this.tableData.findIndex(function(item) {
-//					        return item.id == row.id;
-//					    });
-//					    if (tmpIndex > -1) {
-//					        this.tableData.removeAt(tmpIndex);
-//					    } 
-					});
-					
-				}).catch(() => {
-					
-				});
-	    	},
-	    	//批量删除
-	    	$_batchDel() {
-	    		var self = this;
-			    if (this.tableSelect.length == 0) {
-			        this.$alert("请选择需要删除的邮件", "提示", {
-			            confirmButtonText: "确定",
-			            type: "info"
-			        });
-			        return;
-			    }
-			    var ids = this.tableSelect.map(item => item.id).toString();//用逗号隔开的字符串
-			    this.$confirm("删除后将不能恢复，确认删除所选邮件吗?", "提示", {
-			        type: "warning"
-			    })
-			    .then(() => {
-			    	this.listLoading = true;
-					let para = { ids: ids };
-					batchRemoveMail(para).then((res) => {
-						this.listLoading = false;
-						this.$message({
-							message: '删除成功',
-							type: 'success'
-						});
-						this.$_getData();
-						
-//						let temIndex = this.tableData.findIndex(function(item){
-//							return item.id = this.tableSelect.id
-//						})
-					});
-			    })
-			    .catch(() => {});
-	    	},
+//	    	$_del:function(index,row){
+//	    		this.$confirm('删除后将不能恢复，确认删除邮件吗?', '提示', {
+//					type: 'warning'
+//				}).then(() => {
+//					this.listLoading = true;
+//					let para = { id: row.id };
+//					removeMail(para).then((res) => {
+//						this.listLoading = false;
+//						this.$message({
+//							message: '删除成功',
+//							type: 'success'
+//						});
+//						this.$_getData();
+//						//不调用接口删除的方式
+////						let tmpIndex = this.tableData.findIndex(function(item) {
+////					        return item.id == row.id;
+////					    });
+////					    if (tmpIndex > -1) {
+////					        this.tableData.removeAt(tmpIndex);
+////					    } 
+//					});
+//					
+//				}).catch(() => {
+//					
+//				});
+//	    	},
+//	    	//批量删除
+//	    	$_batchDel() {
+//	    		var self = this;
+//			    if (this.tableSelect.length == 0) {
+//			        this.$alert("请选择需要删除的邮件", "提示", {
+//			            confirmButtonText: "确定",
+//			            type: "info"
+//			        });
+//			        return;
+//			    }
+//			    var ids = this.tableSelect.map(item => item.id).toString();//用逗号隔开的字符串
+//			    this.$confirm("删除后将不能恢复，确认删除所选邮件吗?", "提示", {
+//			        type: "warning"
+//			    })
+//			    .then(() => {
+//			    	this.listLoading = true;
+//					let para = { ids: ids };
+//					batchRemoveMail(para).then((res) => {
+//						this.listLoading = false;
+//						this.$message({
+//							message: '删除成功',
+//							type: 'success'
+//						});
+//						this.$_getData();
+//						
+////						let temIndex = this.tableData.findIndex(function(item){
+////							return item.id = this.tableSelect.id
+////						})
+//					});
+//			    })
+//			    .catch(() => {});
+//	    	},
 	    	//分页
 	    	handleCurrent(val) {
 	    		this.currentPage = val;//页数高亮
@@ -246,9 +256,12 @@
 	   			this.detailShow = false;
 	   		},
 	  	},
-	  components: {
-	    emailDetail
-	  }
+//	  	updated(){
+//	  		console.log(this.filters.date);
+//	  	},
+	  	components: {
+	    	emailDetail
+	  	}
 	}
 </script>
 

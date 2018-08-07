@@ -10,12 +10,12 @@ module.exports = {
   	
     // Paths
     assetsSubDirectory: 'static',
-    assetsPublicPath: './',
+    assetsPublicPath: '/',
 //  proxyTable: proxyConfig.proxy,
 		
 		proxyTable: {
       '/base/': {
-        target:'http://10.201.76.230:8080/rds/project/0c79cdcbaf9248ccaf94e073542ad6bf/command',
+        target:'http://10.200.202.36:8080',
         changeOrigin: true,
         pathRewrite: {
           '^/base': ''
@@ -61,7 +61,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: './',
+    assetsPublicPath: '/',
 
     /**
      * Source Maps

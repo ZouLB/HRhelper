@@ -72,7 +72,7 @@
 </template>
 
 <script>
-	import util from '../../assets/js/util.js'
+	import util from '../../assets/js/util.js';
 	
   	export default {
 	    data() {
