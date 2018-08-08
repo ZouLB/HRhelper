@@ -1,10 +1,14 @@
 import axios from 'axios';
 
+//http://10.200.202.36:8080/operation/getOperationMenu
 //let base = process.env.API_URL;
-let base = "http://192.168.137.1:8080";
+let base = "http://10.200.202.36:8080";
+
+export const getMenuList = params => { return axios.get(`${base}/operation/getOperationMenu`, { params: params }); };
 
 //export const getMailPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
 export const getMailPage = params => { return axios.get(`${base}/mail/list`, { params: params }); };
+
 
 //export const removeMail = params => { return axios.get(`${base}/user/remove`, { params: params }); };
 

@@ -18,8 +18,11 @@
 						<i class="el-icon-hr-sent"></i>
 						<span slot="title">已发送邮件</span>
 					</template>
-					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/sent/'+i">
-						{{v}}
+					<el-menu-item index="/index/sent/0">
+						所有分类
+					</el-menu-item>
+					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/sent/'+v.id">
+						{{v.operationName}}
 					</el-menu-item>
 				</el-submenu>
 				<el-submenu index="3">
@@ -27,9 +30,12 @@
 						<i class="el-icon-hr-sent-"></i>
 						<span slot="title">待发送邮件</span>
 					</template>
-					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+i">
+					<el-menu-item index="/index/waitSend/0">
+						所有分类
+					</el-menu-item>
+					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+v.id">
 					<!--<i class="el-submenu__icon-arrow el-icon-arrow-right"></i>-->
-					{{v}}
+					{{v.operationName}}
 					</el-menu-item>
 				</el-submenu>
 				<el-menu-item index="/index/business">
@@ -57,13 +63,14 @@
 
 <script>
 	import vheader from '../common/header.vue'
+	import { getMenuList} from '../../api/api';
 	
 	export default {
 		data() {
 			return {
 				isCollapse: false,
 				isRouter:true,
-				title:['所有分类','入职提醒','绩效表提醒','转正提醒','续签合同','工作年限贺卡'],
+				title:[],
 				defaultActive:"/index/sent/0",
 				screenWidth: document.body.clientWidth
 			}
@@ -82,6 +89,9 @@
                     that.screenWidth = window.screenWidth
                 })()
             }
+            getMenuList().then((res) => {
+				this.title = res.data.resultEntity;
+			});
 
 		},
 		watch:{
@@ -94,7 +104,6 @@
                     this.timer = true
                     let that = this
                     setTimeout(function () {
-//                      console.log(that.screenWidth)
                         if(that.screenWidth<1200){
                         	that.isCollapse = true;
                         }else{
@@ -111,7 +120,6 @@
 
 <style scoped="scoped" lang="scss">
 
-	/*@import "src/assets/scss/animation.scss";*/
 	@import "src/assets/scss/_index.scss";
 	
 </style>

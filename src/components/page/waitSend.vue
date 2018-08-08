@@ -42,13 +42,13 @@
 				    @selection-change="handleSelectionChange"
 				    style="width: 100%;">
 				    <el-table-column type="selection" width="50"></el-table-column>
-				    <el-table-column property="mail_name" label="邮件主题" show-overflow-tooltip></el-table-column>
+				    <el-table-column property="mailName" label="邮件主题" show-overflow-tooltip></el-table-column>
 				    <el-table-column property="recipient" label="收件人" width="140" show-overflow-tooltip></el-table-column>
 				    <el-table-column property="sender" label="接口人" width="140"></el-table-column>
-				    <el-table-column property="copy_people" label="抄送人" width="140"></el-table-column>
-				    <el-table-column property="operation_id" label="类别" width="140" sortable></el-table-column>
-				    <el-table-column property="send_time" label="发送时间" width="150" sortable></el-table-column>
-				    <el-table-column property="operation" label="操作" width="80">
+				    <el-table-column property="copyPeople" label="抄送人" width="140"></el-table-column>
+				    <el-table-column property="operation" label="类别" width="140" sortable></el-table-column>
+				    <el-table-column property="sendTime" label="发送时间" width="150" sortable></el-table-column>
+				    <el-table-column property="opera" label="操作" width="80">
 				    	<template slot-scope="scope" >
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
 				    		<i class="el-icon-hr-cancel" title="取消发送" @click="$_cancel(scope.$index, scope.row)"></i>
@@ -158,7 +158,7 @@
 		    },
 		    //初始化
 		    $_initialize() {
-		    	let index = this.$route.params.index;
+		    	let index = this.$route.params.id;
 		    	this.table_title = this.title[index];
 		   		if(this.$route.params.id == 0){
 		   			this.sortId = "";
@@ -170,24 +170,18 @@
 		    //获取数据
 		    $_getData() {
 				let para = {
-					page: this.page,
+					pageNum: this.page,
 					pageSize: this.pageSize,
-					name: this.filters.name,
-					sort: this.sortId 
+					status:0,
+					recipient: this.filters.name,
+					operationId: this.sortId,
+					satrtTime:"",
+					endTime:""
 				};
-//				let para = {
-//					pageNum: this.page,
-//					pageSize: this.pageSize,
-//					status:1,
-//					recipent: this.filters.name,
-//					operationId: this.sortId,
-//					satrtTime:"",
-//					endTime:""
-//				};
-//				if(this.filters.date!=''){
-//					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
-//					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
-//				}
+				if(this.filters.date!=''){
+					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+				}
 				this.listLoading = true;
 				getMailPage(para).then((res) => {
 					this.total = res.data.total;
