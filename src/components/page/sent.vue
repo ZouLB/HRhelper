@@ -5,10 +5,12 @@
 			<!--操作栏-->
 			<div class="head clearfix">
 				<span>已发送文件<i class="el-icon-arrow-right"></i>{{table_title}}</span>
-				<el-button type="danger" size="small" plain @click="$_batchDel">批量删除</el-button>
+				<el-button type="primary" size="small" class='search' plain>导出</el-button>
+				<el-button type="danger" size="small" plain @click="$_batchDel">删除</el-button>
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<!--<input type="text" placeholder="搜索" v-model="filters.name" @keyup="$_getData()"/>-->
 				<el-input placeholder="请输入收件人" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input placeholder="请输入所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-date-picker
 			      v-model="filters.date"
 			      type="daterange"
@@ -36,12 +38,24 @@
 				    @selection-change="handleSelectionChange"
 				    style="width: 100%;">
 				    <el-table-column type="selection" width="50"></el-table-column>
+				    <el-table-column property="recipient" label="员工姓名" width="80" show-overflow-tooltip></el-table-column>
+				    <el-table-column property="recipient" label="所属部门" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="recipient" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    
+				    <!--转正-->
+				    <!--<el-table-column property="recipient" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>-->
+				    
+				    <!--绩效-->
+				    <!--<el-table-column property="recipient" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>-->
+				    
 				    <el-table-column property="mailName" label="邮件主题" show-overflow-tooltip></el-table-column>
-				    <el-table-column property="recipient" label="收件人" width="140" show-overflow-tooltip></el-table-column>
-				    <el-table-column property="principal" label="接口人" width="140"></el-table-column>
-				    <el-table-column property="copyPeople" label="抄送人" width="140"></el-table-column>
-				    <el-table-column property="operation" label="类别" width="140" sortable></el-table-column>
-				    <el-table-column property="sendTime" label="发送时间" width="150" sortable></el-table-column>
+				    <el-table-column property="recipient" label="收件人" width="80" show-overflow-tooltip></el-table-column>
+				    <el-table-column property="copyPeople" label="抄送人" width="80" show-overflow-tooltip></el-table-column>
+				    
+				    <!--转正-->
+				    <!--<el-table-column property="recipient" label="状态" width="80" show-overflow-tooltip sortable></el-table-column>-->
+				    
+				    <el-table-column property="sendTime" label="发送时间" width="150" show-overflow-tooltip sortable></el-table-column>
 				    <el-table-column property="opera" label="操作" width="80">
 				    	<template slot-scope="scope" >
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
@@ -51,15 +65,19 @@
 				</el-table>
 			</div>
 			
-			<!--分页-->
-			<el-pagination
-				layout="sizes, prev, pager, next"
-				@size-change="handleSizeChange"
-				@current-change="handleCurrent"
-				:current-page.sync="currentPage"
-		     	:page-sizes="[20, 50, 100]"
-				:total="total" style="float:right;">
-			</el-pagination>
+			<div class="footer">
+				<span>接口人：</span>
+				<!--分页-->
+				<el-pagination
+					layout="total,sizes, prev, pager, next"
+					@size-change="handleSizeChange"
+					@current-change="handleCurrent"
+					:current-page.sync="currentPage"
+			     	:page-sizes="[20, 50, 100]"
+					:total="total" style="float:right;">
+				</el-pagination>
+			</div>
+			
 		</div>
 		
 		<transition name='fade' mode="out-in">
@@ -154,28 +172,28 @@
 		      	this.detailShow = false;
 		    },
 		    //获取数据
-		    $_getData() {
-				let para = {
-					pageNum: this.page,
-					pageSize: this.pageSize,
-					status:1,
-					recipient: this.filters.name,
-					operationId: this.sortId,
-					satrtTime:"",
-					endTime:""
-				};
-				if(this.filters.date!=''){
-					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
-					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
-				}
-				this.listLoading = true;
-				getMailPage(para).then((res) => {
-					console.log(res);
-					this.total = res.data.resultEntity.total;
-					this.tableData = res.data.resultEntity.list;
-					this.listLoading = false;
-				});
-			},
+//		    $_getData() {
+//				let para = {
+//					pageNum: this.page,
+//					pageSize: this.pageSize,
+//					status:1,
+//					recipient: this.filters.name,
+//					operationId: this.sortId,
+//					satrtTime:"",
+//					endTime:""
+//				};
+//				if(this.filters.date!=''){
+//					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+//					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+//				}
+//				this.listLoading = true;
+//				getMailPage(para).then((res) => {
+//					console.log(res);
+//					this.total = res.data.resultEntity.total;
+//					this.tableData = res.data.resultEntity.list;
+//					this.listLoading = false;
+//				});
+//			},
 	    	//删除
 //	    	$_del:function(index,row){
 //	    		this.$confirm('删除后将不能恢复，确认删除邮件吗?', '提示', {
@@ -268,6 +286,5 @@
 <style scoped="scoped" lang="scss">
 	
 	@import "src/assets/scss/_common.scss";
-	/*@import "src/assets/scss/animation.scss";*/
 	
 </style>

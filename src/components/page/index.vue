@@ -13,31 +13,27 @@
 					<i class="el-icon-arrow-left"></i>
 					<span slot="title">菜单栏</span>
 				</el-menu-item>
-				<el-submenu index="2">
-					<template slot="title">
-						<i class="el-icon-hr-sent"></i>
-						<span slot="title">已发送邮件</span>
-					</template>
-					<el-menu-item index="/index/sent/0">
-						所有分类
-					</el-menu-item>
-					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/sent/'+v.id">
-						{{v.operationName}}
-					</el-menu-item>
-				</el-submenu>
 				<el-submenu index="3">
 					<template slot="title">
 						<i class="el-icon-hr-sent-"></i>
 						<span slot="title">待发送邮件</span>
 					</template>
-					<el-menu-item index="/index/waitSend/0">
-						所有分类
-					</el-menu-item>
 					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+v.id">
 					<!--<i class="el-submenu__icon-arrow el-icon-arrow-right"></i>-->
 					{{v.operationName}}
 					</el-menu-item>
 				</el-submenu>
+				
+				<el-submenu index="2">
+					<template slot="title">
+						<i class="el-icon-hr-sent"></i>
+						<span slot="title">已发送邮件</span>
+					</template>
+					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/sent/'+v.id">
+						{{v.operationName}}
+					</el-menu-item>
+				</el-submenu>
+				
 				<el-menu-item index="/index/business">
 					<i class="el-icon-hr-business2"></i>
 					<span slot="title">业务管理</span>

@@ -57,7 +57,7 @@
 				</el-table>
 			</div>
 			<el-pagination
-				layout="sizes, prev, pager, next"
+				layout="total,sizes, prev, pager, next"
 				@size-change="handleSizeChange"
 				@current-change="handleCurrent"
 				:current-page.sync="currentPage"
