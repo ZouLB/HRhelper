@@ -36,12 +36,12 @@
 				
 				<el-menu-item index="/index/business">
 					<i class="el-icon-hr-business2"></i>
-					<span slot="title">业务管理</span>
+					<span slot="title">规则管理</span>
 				</el-menu-item>
-				<el-menu-item index="/index/templateWrite">
+				<!--<el-menu-item index="/index/templateWrite">
 					<i class="el-icon-hr-mail1"></i>
 					<span slot="title">邮件模板编写</span>
-				</el-menu-item>
+				</el-menu-item>-->
 				<!--<el-menu-item index="">
 					<i class="el-icon-news"></i>
 					<span slot="title">审核管理</span>
@@ -66,8 +66,25 @@
 			return {
 				isCollapse: false,
 				isRouter:true,
-				title:[],
-				defaultActive:"/index/sent/0",
+//				['所有分类','入职提醒','绩效表提醒','转正提醒','续签合同','工作年限贺卡']
+				title:[{
+					id:1,
+					operationName:"入职提醒"
+				},{
+					id:2,
+					operationName:"绩效表提醒"
+				},{
+					id:3,
+					operationName:"转正提醒"
+				},{
+					id:4,
+					operationName:"续签合同"
+				},{
+					id:5,
+					operationName:"工作年限贺卡"
+				}
+				],
+				defaultActive:"/index/waitSend/1",
 				screenWidth: document.body.clientWidth
 			}
 		},
@@ -85,9 +102,9 @@
                     that.screenWidth = window.screenWidth
                 })()
             }
-            getMenuList().then((res) => {
-				this.title = res.data.resultEntity;
-			});
+//          getMenuList().then((res) => {
+//				this.title = res.data.resultEntity;
+//			});
 
 		},
 		watch:{

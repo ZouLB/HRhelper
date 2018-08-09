@@ -9,8 +9,8 @@
 				<el-button type="danger" size="small" plain @click="$_batchDel">删除</el-button>
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<!--<input type="text" placeholder="搜索" v-model="filters.name" @keyup="$_getData()"/>-->
-				<el-input placeholder="请输入收件人" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-input placeholder="请输入所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input placeholder="请输入员工姓名" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input v-if="table_title!='续签合同'" placeholder="请输入所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-date-picker
 			      v-model="filters.date"
 			      type="daterange"
@@ -21,6 +21,16 @@
 			      end-placeholder="结束日期"
 			      :picker-options="pickerOptions2">
 			    </el-date-picker>
+			    <el-select v-if="table_title=='绩效表提醒'" v-model="filters.sortSearch" clearable placeholder="招聘类型">
+				    <!--<el-option
+				      v-for="item in sort"
+				      :key="item.value"
+				      :label="item.label"
+				      :value="item.value">
+				    </el-option>-->
+				    <el-option label="社招" value="社招"></el-option>
+				    <el-option label="校招" value="校招"></el-option>
+				 </el-select>
 			</div>
 			
 			<!--表格-->
@@ -43,17 +53,21 @@
 				    <el-table-column property="recipient" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--转正-->
-				    <!--<el-table-column property="recipient" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>-->
+				    <el-table-column v-if="table_title=='转正提醒'" property="recipient" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--绩效-->
-				    <!--<el-table-column property="recipient" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>-->
+				    <el-table-column v-if="table_title=='绩效表提醒'" property="recipient" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
+				    
+				    <!--续签-->
+				    <el-table-column v-if="table_title=='续签合同'" property="recipient" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
+				    
 				    
 				    <el-table-column property="mailName" label="邮件主题" show-overflow-tooltip></el-table-column>
 				    <el-table-column property="recipient" label="收件人" width="80" show-overflow-tooltip></el-table-column>
 				    <el-table-column property="copyPeople" label="抄送人" width="80" show-overflow-tooltip></el-table-column>
 				    
 				    <!--转正-->
-				    <!--<el-table-column property="recipient" label="状态" width="80" show-overflow-tooltip sortable></el-table-column>-->
+				    <el-table-column v-if="table_title=='转正提醒'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
 				    
 				    <el-table-column property="sendTime" label="发送时间" width="150" show-overflow-tooltip sortable></el-table-column>
 				    <el-table-column property="opera" label="操作" width="80">
@@ -92,7 +106,7 @@
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
 	//, removeMail, batchRemoveMail 
-	import { getMailPage} from '../../api/api';
+//	import { getMailPage} from '../../api/api';
 	
   	export default {
 	    data() {
@@ -100,7 +114,8 @@
 	      	table_title:null,
 	      	filters:{
 	      		name:'',
-	      		date:''
+	      		date:'',
+	      		sortSearch:''
 	      	},
 	        tableData: [],
 	        pickerOptions2: {
@@ -160,7 +175,7 @@
 		   		}else{
 		   			this.sortId = this.$route.params.id;
 		   		}
-		   		this.$_getData();
+//		   		this.$_getData();
 		    },
 		    //进入邮件详情
 		    $_checkDetail(item){
@@ -257,22 +272,26 @@
 	    	handleCurrent(val) {
 	    		this.currentPage = val;//页数高亮
 				this.page = val;
-				this.$_getData();
+//				this.$_getData();
 			},
 			handleSizeChange(val) {
 				this.pageSize = val;
-				this.$_getData();
+//				this.$_getData();
 		    },
 	    	
 	    },
 	    mounted(){
 	   		this.$_initialize();
+	   		
 		},
 		watch:{
 	   		'$route' (to, from){
 	   			this.$_initialize();
 	   			this.detailShow = false;
 	   		},
+	   		table_title(){
+	   			this.$_initialize();
+	   		}
 	  	},
 //	  	updated(){
 //	  		console.log(this.filters.date);

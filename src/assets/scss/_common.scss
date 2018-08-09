@@ -19,12 +19,12 @@ section {
     }
     .el-input--small {
         float: right;
-        width: 150px;
+        width: 145px;
         height: 30px;
         /*border-radius: 5px;*/
         /*border: 1px solid gainsboro;*/
         font: 14px "微软雅黑";
-        margin-right: 10px;
+        margin-right: 9px;
         text-indent: 10px;
         outline: none;
         &:focus {
@@ -33,7 +33,7 @@ section {
     }
     .el-button {
         float: right;
-        margin-left: 10px;
+        margin-left: 9px;
     }
     .el-input__inner {
         height: 32px;
@@ -47,12 +47,13 @@ section {
         padding-left: 30px;
     }
     .el-date-editor--daterange.el-input__inner{
-        width: 270px;
+        width: 250px;
     }
-//  .el-select{
-//      position: absolute;
-//      right: 387px;
-//  }
+    .el-select{
+        float: right;
+        margin-right: 9px;
+        width: 120px;
+    }
 }
 .content {
     position: absolute;

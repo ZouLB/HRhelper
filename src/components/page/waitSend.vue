@@ -14,6 +14,8 @@
 				      :label="item.label"
 				      :value="item.value">
 				    </el-option>
+				    <el label="社招" value="社招"></el>
+				    <el label="校招" value="校招"></el>
 				 </el-select>-->
 				<el-input placeholder="请输入收件人" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-input placeholder="请输入所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
@@ -58,14 +60,18 @@
 				    </el-table-column>
 				</el-table>
 			</div>
-			<el-pagination
-				layout="total,sizes, prev, pager, next"
-				@size-change="handleSizeChange"
-				@current-change="handleCurrent"
-				:current-page.sync="currentPage"
-	     		:page-sizes="[20, 50, 100]"
-				:total="total" style="float:right;">
-			</el-pagination>
+			<div class="footer">
+				<span>接口人：</span>
+				<!--分页-->
+				<el-pagination
+					layout="total,sizes, prev, pager, next"
+					@size-change="handleSizeChange"
+					@current-change="handleCurrent"
+					:current-page.sync="currentPage"
+			     	:page-sizes="[20, 50, 100]"
+					:total="total" style="float:right;">
+				</el-pagination>
+			</div>
 		</div>
 		
 		<transition name='fade' mode="out-in">
@@ -80,7 +86,7 @@
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
 //	, removeMail, batchRemoveMail 
-	import { getMailPage} from '../../api/api';
+//	import { getMailPage} from '../../api/api';
 	
   	export default {
 	    data() {
@@ -89,7 +95,8 @@
 	      	listLoading:false,
 	      	filters:{
 	      		name:'',
-	      		date:''
+	      		date:'',
+	      		sortSearch:''
 	      	},
 	        tableData: [
 //	        	{
@@ -167,30 +174,30 @@
 		   		}else{
 		   			this.sortId = this.$route.params.id;
 		   		}
-		   		this.$_getData();
+//		   		this.$_getData();
 		    },
 		    //获取数据
-		    $_getData() {
-				let para = {
-					pageNum: this.page,
-					pageSize: this.pageSize,
-					status:0,
-					recipient: this.filters.name,
-					operationId: this.sortId,
-					satrtTime:"",
-					endTime:""
-				};
-				if(this.filters.date!=''){
-					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
-					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
-				}
-				this.listLoading = true;
-				getMailPage(para).then((res) => {
-					this.total = res.data.total;
-					this.tableData = res.data.users;
-					this.listLoading = false;
-				});
-			},
+//		    $_getData() {
+//				let para = {
+//					pageNum: this.page,
+//					pageSize: this.pageSize,
+//					status:0,
+//					recipient: this.filters.name,
+//					operationId: this.sortId,
+//					satrtTime:"",
+//					endTime:""
+//				};
+//				if(this.filters.date!=''){
+//					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+//					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+//				}
+//				this.listLoading = true;
+//				getMailPage(para).then((res) => {
+//					this.total = res.data.total;
+//					this.tableData = res.data.users;
+//					this.listLoading = false;
+//				});
+//			},
 	    	//取消发送
 //	    	$_cancel:function(index,row){
 //	    		this.$confirm('取消后将不能恢复，确认取消发送吗?', '提示', {
