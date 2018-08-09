@@ -77,25 +77,26 @@ input:-webkit-autofill {
     background-color: #aaa;
 }
 
-.el-table th:nth-last-of-type(2)>.cell,
-.el-table th:nth-last-of-type(3)>.cell{
-    text-align: center !important;
-}
+//.el-table th:nth-last-of-type(2)>.cell,
+//.el-table th:nth-last-of-type(3)>.cell{
+//  text-align: center !important;
+//}
 
-.el-table__row td:nth-last-of-type(1),
-.el-table__row td:nth-last-of-type(2){
-    text-align: center;
-}
+//.el-table__row td:nth-last-of-type(1),
+//.el-table__row td:nth-last-of-type(2){
+//  text-align: center;
+//}
 
 .el-pagination{
-    position: absolute;
-    right: 10px;
-    bottom: 17px;
+//  position: absolute;
+//  right: 10px;
+//  bottom: 17px;
+    float: right;
 }
 
-.right .el-table--mini th{
-    padding:2px 0;
-}
+//.right .el-table--mini th{
+//  padding:2px 0;
+//}
 
 .right .el-pagination .el-select .el-input{
     margin: 0;
@@ -167,6 +168,11 @@ input:-webkit-autofill {
 .sentTime.el-date-editor .el-input__inner{
     height: 34px;
 }
+
+.head .el-input--suffix .el-input__inner{
+    padding-right: 0;
+}
+
 
 //邮件模板编写
 .el-tabs>.el-tabs__header .el-tabs__item.is-active{

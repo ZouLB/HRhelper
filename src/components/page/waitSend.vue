@@ -4,6 +4,7 @@
 			<!--操作栏-->
 			<div class="head clearfix">
 				<span>待发送文件<i class="el-icon-arrow-right"></i>{{table_title}}</span>
+				<el-button type="primary" size="small">导出</el-button>
 				<el-button type="danger" size="small" plain @click="$_batchCancel">取消发送</el-button>
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<!--<el-select v-model="filters.sortSearch" clearable placeholder="请选择类别">
@@ -15,6 +16,7 @@
 				    </el-option>
 				 </el-select>-->
 				<el-input placeholder="请输入收件人" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input placeholder="请输入所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-date-picker
 			      v-model="filters.date"
 			      type="daterange"

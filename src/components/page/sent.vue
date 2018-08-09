@@ -5,7 +5,7 @@
 			<!--操作栏-->
 			<div class="head clearfix">
 				<span>已发送文件<i class="el-icon-arrow-right"></i>{{table_title}}</span>
-				<el-button type="primary" size="small" class='search' plain>导出</el-button>
+				<el-button type="primary" size="small">导出</el-button>
 				<el-button type="danger" size="small" plain @click="$_batchDel">删除</el-button>
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<!--<input type="text" placeholder="搜索" v-model="filters.name" @keyup="$_getData()"/>-->

@@ -18,14 +18,13 @@ section {
         color: #666;
     }
     .el-input--small {
-        /*float: right;*/
-        position: absolute;
-        right: 187px;
-        width: 200px;
+        float: right;
+        width: 150px;
         height: 30px;
         /*border-radius: 5px;*/
         /*border: 1px solid gainsboro;*/
         font: 14px "微软雅黑";
+        margin-right: 10px;
         text-indent: 10px;
         outline: none;
         &:focus {
@@ -41,14 +40,19 @@ section {
         line-height: 32px 
     }
     .el-range-editor.el-input__inner {
-        position: absolute;
-        right: 387px;
+        float: right;
         padding: 0 10px;
     }
-    .el-select{
-        position: absolute;
-        right: 387px;
+    .el-input--prefix .el-input__inner{
+        padding-left: 30px;
     }
+    .el-date-editor--daterange.el-input__inner{
+        width: 270px;
+    }
+//  .el-select{
+//      position: absolute;
+//      right: 387px;
+//  }
 }
 .content {
     position: absolute;
@@ -105,5 +109,17 @@ section {
         margin-right: 0;
         margin-bottom: 0;
         width: 50%;
+    }
+}
+.footer{
+    height: 32px;
+    position: absolute;
+    left: 22px;
+    right: 13px;
+    bottom: 18px;
+    span{
+        color: #666;
+        font: 14px/32px "微软雅黑";
+        margin-left: 10px;
     }
 }
