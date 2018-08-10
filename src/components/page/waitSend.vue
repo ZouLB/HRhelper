@@ -5,20 +5,10 @@
 			<div class="head clearfix">
 				<span>待发送文件<i class="el-icon-arrow-right"></i>{{table_title}}</span>
 				<el-button type="primary" size="small">导出</el-button>
-				<el-button type="danger" size="small" plain @click="$_batchCancel">取消发送</el-button>
+				<el-button type="danger" size="small" plain @click="$_batchDel">删除</el-button>
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
-				<!--<el-select v-model="filters.sortSearch" clearable placeholder="请选择类别">
-				    <el-option
-				      v-for="item in sort"
-				      :key="item.value"
-				      :label="item.label"
-				      :value="item.value">
-				    </el-option>
-				    <el label="社招" value="社招"></el>
-				    <el label="校招" value="校招"></el>
-				 </el-select>-->
-				<el-input placeholder="请输入收件人" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-input placeholder="请输入所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input placeholder="员工姓名" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input v-if="table_title!='续签合同'" placeholder="所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-date-picker
 			      v-model="filters.date"
 			      type="daterange"
@@ -29,6 +19,16 @@
 			      end-placeholder="结束日期"
 			      :picker-options="pickerOptions2">
 			    </el-date-picker>
+			    <el-select v-if="table_title=='绩效表提醒'" v-model="filters.sortSearch" clearable placeholder="招聘类型">
+				    <!--<el-option
+				      v-for="item in sort"
+				      :key="item.value"
+				      :label="item.label"
+				      :value="item.value">
+				    </el-option>-->
+				    <el-option label="社招" value="社招"></el-option>
+				    <el-option label="校招" value="校招"></el-option>
+				 </el-select>
 			</div>
 			
 			<!--表格-->
@@ -46,16 +46,32 @@
 				    @selection-change="handleSelectionChange"
 				    style="width: 100%;">
 				    <el-table-column type="selection" width="50"></el-table-column>
+				    <el-table-column property="recipient" label="员工姓名" width="80" show-overflow-tooltip></el-table-column>
+				    <el-table-column property="recipient" label="所属部门" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="recipient" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    
+				    <!--转正-->
+				    <el-table-column v-if="table_title=='转正提醒'" property="recipient" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    
+				    <!--绩效-->
+				    <el-table-column v-if="table_title=='绩效表提醒'" property="recipient" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
+				    
+				    <!--续签-->
+				    <el-table-column v-if="table_title=='续签合同'" property="recipient" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
+				    
+				    
 				    <el-table-column property="mailName" label="邮件主题" show-overflow-tooltip></el-table-column>
-				    <el-table-column property="recipient" label="收件人" width="140" show-overflow-tooltip></el-table-column>
-				    <el-table-column property="sender" label="接口人" width="140"></el-table-column>
-				    <el-table-column property="copyPeople" label="抄送人" width="140"></el-table-column>
-				    <el-table-column property="operation" label="类别" width="140" sortable></el-table-column>
-				    <el-table-column property="sendTime" label="发送时间" width="150" sortable></el-table-column>
-				    <el-table-column property="opera" label="操作" width="80">
+				    <el-table-column property="recipient" label="收件人" width="80" show-overflow-tooltip></el-table-column>
+				    <el-table-column property="copyPeople" label="抄送人" width="80" show-overflow-tooltip></el-table-column>
+				    
+				    <!--转正-->
+				    <el-table-column v-if="table_title=='转正提醒'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
+				    
+				    <el-table-column property="sendTime" label="发送时间" width="150" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column fixed="right" property="opera" label="操作" width="80">
 				    	<template slot-scope="scope" >
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
-				    		<i class="el-icon-hr-cancel" title="取消发送" @click="$_cancel(scope.$index, scope.row)"></i>
+				    		<i class="el-icon-delete" title="删除" @click="$_del(scope.$index, scope.row)"></i>
 						</template>
 				    </el-table-column>
 				</el-table>
@@ -257,11 +273,11 @@
 	    	handleCurrent(val) {
 	    		this.currentPage = val;//页数高亮
 				this.page = val;
-				this.$_getData();
+//				this.$_getData();
 			},
 			handleSizeChange(val) {
 				this.pageSize = val
-				this.$_getData();
+//				this.$_getData();
 		    },
 	    	
 	    },
@@ -273,6 +289,9 @@
 				this.$_initialize();
 	   			this.detailShow = false;
 	   		},
+	   		table_title(){
+	   			this.$_initialize();
+	   		}
 	    },
 	    components: {
 	    	emailDetail
@@ -283,6 +302,5 @@
 <style scoped="scoped" lang="scss">
 	
 	@import "src/assets/scss/_common.scss";
-	/*@import "src/assets/scss/animation.scss";*/
 	
 </style>

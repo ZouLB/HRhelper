@@ -38,10 +38,10 @@
 					<i class="el-icon-hr-business2"></i>
 					<span slot="title">规则管理</span>
 				</el-menu-item>
-				<!--<el-menu-item index="/index/templateWrite">
+				<el-menu-item index="/index/templateWrite">
 					<i class="el-icon-hr-mail1"></i>
 					<span slot="title">邮件模板编写</span>
-				</el-menu-item>-->
+				</el-menu-item>
 				<!--<el-menu-item index="">
 					<i class="el-icon-news"></i>
 					<span slot="title">审核管理</span>

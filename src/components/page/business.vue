@@ -2,9 +2,10 @@
 	<section>
 		<div v-if="!editVisible">
 		<div class="head clearfix editHead">
-			<span>业务管理</span>
-			<el-button type="primary" size="small" class='search' plain>搜索</el-button>
-			<el-input placeholder="请输入业务名称" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+			<span>规则管理</span>
+			<el-button type="primary" size="small" plain>新增规则</el-button>
+			<!--<el-button type="primary" size="small" class='search' plain>搜索</el-button>-->
+			<!--<el-input placeholder="请输入业务名称" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>-->
 		</div>
 		
 		<div class="content">
@@ -22,18 +23,19 @@
 			    <el-table-column type="expand">
 			      <template slot-scope="props">
 			        <el-form label-position="left" inline class="demo-table-expand">
-			          <el-form-item label="业务编号">
+			          <el-form-item label="备注">
 			            <span>1</span>
 			          </el-form-item>
-			          <el-form-item label="业务描述">
+			          <!--<el-form-item label="业务描述">
 			            <span></span>
-			          </el-form-item>
+			          </el-form-item>-->
 			        </el-form>
 			      </template>
 			    </el-table-column>
-			    <el-table-column property="name" label="业务名称" show-overflow-tooltip></el-table-column>
-			    <el-table-column property="rule" label="业务规则" width="380"></el-table-column>			    
-			    <el-table-column property="principal" label="接口人" width="140" sortable></el-table-column>
+			    <el-table-column property="name" label="规则名称" width="180" show-overflow-tooltip></el-table-column>
+			    <el-table-column property="name" label="业务类型" width="150" show-overflow-tooltip></el-table-column>
+			    <el-table-column property="rule" label="业务规则" ></el-table-column>			    
+			   	<el-table-column property="principal" label="接口人" width="100" sortable></el-table-column>
 			    <el-table-column property="time" label="更新时间" width="140" sortable></el-table-column>
 			    <!--<el-table-column property="c" label="启用" width="140">
 			    	<template slot-scope="scope" >
@@ -57,7 +59,7 @@
 			    <el-table-column property="operation" label="操作" width="80">
 			    	<template slot-scope="scope" >
 			    		<i class="el-icon-edit-outline" title="编辑" @click="$_checkBus(scope.row)"></i>
-			    		<i class="el-icon-delete" title="删除业务" @click="$_del(scope.$index, scope.row)"></i>
+			    		<i class="el-icon-delete" title="删除" @click="$_del(scope.$index, scope.row)"></i>
 					</template>
 			    </el-table-column>
 			</el-table>

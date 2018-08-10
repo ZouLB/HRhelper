@@ -9,8 +9,8 @@
 				<el-button type="danger" size="small" plain @click="$_batchDel">删除</el-button>
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<!--<input type="text" placeholder="搜索" v-model="filters.name" @keyup="$_getData()"/>-->
-				<el-input placeholder="请输入员工姓名" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-input v-if="table_title!='续签合同'" placeholder="请输入所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input placeholder="员工姓名" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input v-if="table_title!='续签合同'" placeholder="所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-date-picker
 			      v-model="filters.date"
 			      type="daterange"
@@ -70,7 +70,7 @@
 				    <el-table-column v-if="table_title=='转正提醒'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
 				    
 				    <el-table-column property="sendTime" label="发送时间" width="150" show-overflow-tooltip sortable></el-table-column>
-				    <el-table-column property="opera" label="操作" width="80">
+				    <el-table-column fixed="right" property="opera" label="操作" width="80">
 				    	<template slot-scope="scope" >
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
 				    		<i class="el-icon-delete" title="删除" @click="$_del(scope.$index, scope.row)"></i>

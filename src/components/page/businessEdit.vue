@@ -7,14 +7,24 @@
 		</div>
 		
 		<el-form :model="businessItem" label-width="90px" ref="businessItem" :rules="rules">
-			<el-form-item label="业务名称" prop="name">
+			<el-form-item label="规则名称" prop="name">
 				<el-input v-model="businessItem.name" auto-complete="off" placeholder="请输入业务名称"></el-input>
 			</el-form-item>
 			<el-form-item label="接口人" prop="principal">
-				<el-select v-model="businessItem.principal" multiple filterable allow-create default-first-option placeholder="请选择或输入负责人">
+				<!--<el-select v-model="businessItem.principal" multiple filterable allow-create default-first-option placeholder="请选择或输入负责人">
 					<el-option v-for="(item,i) in hrForm" :key="i" :label="item" :value="item">
 					</el-option>
-				</el-select>
+				</el-select>-->
+				<el-select v-model="businessItem.principal" placeholder="请选择接口人">
+			      <el-option v-for="(item,i) in hrForm" :key="i" :label="item" :value="item">
+					</el-option>
+			    </el-select>
+			</el-form-item>
+			<el-form-item label="业务类型" prop="principal">
+				<el-select v-model="businessItem.principal" placeholder="请选择业务类型">
+			      <el-option v-for="(item,i) in hrForm" :key="i" :label="item" :value="item">
+					</el-option>
+			    </el-select>
 			</el-form-item>
 			<!--<el-form-item label="业务规则" prop="rule">
 				<span>发送邮件的时间为员工入职后：</span></br>
@@ -30,7 +40,7 @@
 			    <el-radio-group v-model="value">
 			      	<el-radio label="入职后"></el-radio>
 			      	<el-radio label="转正前"></el-radio>
-			      	<el-radio label="离职前"></el-radio>
+			      	<el-radio label="合同结束前"></el-radio>
 			    </el-radio-group>
 			    
 			    </br>
@@ -63,8 +73,8 @@
 
 			</el-form-item>
 			
-			<el-form-item label="业务描述" prop="describe">
-				<el-input type="textarea" :rows="5" auto-complete="off"></el-input>
+			<el-form-item label="备注" prop="describe">
+				<el-input type="textarea" :rows="4" auto-complete="off"></el-input>
 			</el-form-item>
 
 		</el-form>
