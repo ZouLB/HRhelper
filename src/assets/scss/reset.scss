@@ -204,6 +204,18 @@ input:-webkit-autofill {
     border-left: none !important;
 }
 
+.el-tabs__content{
+    position: absolute;
+    top: 36px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 #temp-write .ql-toolbar.ql-snow{
     background-color:#f5f7fa ;
+}
+
+#busEdit .el-select .el-input__inner{
+    height: 40px;
 }

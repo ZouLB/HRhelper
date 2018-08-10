@@ -3,7 +3,7 @@
 		<div v-if="!editVisible">
 		<div class="head clearfix editHead">
 			<span>规则管理</span>
-			<el-button type="primary" size="small" plain>新增规则</el-button>
+			<el-button type="primary" size="small" plain @click="$_addBus">新增规则</el-button>
 			<!--<el-button type="primary" size="small" class='search' plain>搜索</el-button>-->
 			<!--<el-input placeholder="请输入业务名称" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>-->
 		</div>
@@ -112,7 +112,7 @@
 		    },
 		    //删除
 	    	$_del:function(index,row){
-	    		this.$confirm('删除后将不能恢复，确认删除业务吗?', '提示', {
+	    		this.$confirm('删除后将不能恢复，确认删除规则吗?', '提示', {
 					type: 'warning'
 				}).then(() => {
 					this.listLoading = true;
@@ -129,11 +129,15 @@
 				this.editVisible = true;
 				this.selectedBus = item;
 		    },
+		    $_addBus(){
+		    	this.editVisible = true;
+				this.selectedBus = {};
+		    }
 		},
 		watch:{
-	   		'$route' (to, from){
-	   			this.editVisible = false;
-	   		},
+//	   		'$route' (to, from){
+//	   			this.editVisible = false;
+//	   		}
 	  	},
 		components: {
 		    businessEdit
