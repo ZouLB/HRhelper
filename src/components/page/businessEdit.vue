@@ -1,7 +1,7 @@
 <template>
 	<section id="busEdit">
 		<div class="head clearfix">
-			<span>业务编辑</span>
+			<span>规则编辑</span>
 			<el-button type="primary" size="small" plain @click="$_onBack">返回</el-button>
 			<el-button type="primary" size="small" @click="$_onSave" :loading="saveLoading">保存</el-button>
 			<el-button v-if="editableTabsValue=='1'" type="primary" size="small" plain @click="addDomain">新增发送时间</el-button>

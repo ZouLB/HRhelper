@@ -8,7 +8,7 @@
 				<el-button type="danger" size="small" plain @click="$_batchDel">删除</el-button>
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<el-input placeholder="员工姓名" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-input v-if="table_title!='续签合同'" placeholder="所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input v-if="table_title!='续签合同'" placeholder="所属部门" clearable size="small" v-model="filters.depart"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-date-picker
 			      v-model="filters.date"
 			      type="daterange"
@@ -19,7 +19,7 @@
 			      end-placeholder="结束日期"
 			      :picker-options="pickerOptions2">
 			    </el-date-picker>
-			    <el-select v-if="table_title=='绩效表提醒'" v-model="filters.sortSearch" clearable placeholder="招聘类型">
+			    <el-select v-if="table_title=='绩效表提醒'" v-model="filters.recruit" clearable placeholder="招聘类型">
 				    <!--<el-option
 				      v-for="item in sort"
 				      :key="item.value"
@@ -51,13 +51,13 @@
 				    <el-table-column property="recipient" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='转正提醒'" property="recipient" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='试用期转正'" property="recipient" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--绩效-->
-				    <el-table-column v-if="table_title=='绩效表提醒'" property="recipient" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='绩效表填写'" property="recipient" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--续签-->
-				    <el-table-column v-if="table_title=='续签合同'" property="recipient" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='合同续签'" property="recipient" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    
 				    <el-table-column property="mailName" label="邮件主题" show-overflow-tooltip></el-table-column>
@@ -65,7 +65,7 @@
 				    <el-table-column property="copyPeople" label="抄送人" width="80" show-overflow-tooltip></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='转正提醒'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
+				    <!--<el-table-column v-if="table_title=='转正提醒'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>-->
 				    
 				    <el-table-column property="sendTime" label="发送时间" width="150" show-overflow-tooltip sortable></el-table-column>
 				    <el-table-column fixed="right" property="opera" label="操作" width="80">
@@ -102,7 +102,7 @@
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
 //	, removeMail, batchRemoveMail 
-//	import { getMailPage} from '../../api/api';
+	import { getMailPage} from '../../api/api';
 	
   	export default {
 	    data() {
@@ -111,27 +111,11 @@
 	      	listLoading:false,
 	      	filters:{
 	      		name:'',
+	      		depart:'',
 	      		date:'',
-	      		sortSearch:''
+	      		recruit:''
 	      	},
-	        tableData: [
-//	        	{
-//		          theme: '新员工入职提醒',
-//		          recipient: '张三',
-//		          interface: '李四',
-//		          category: '入职提醒',
-//		          copy_people: '王五',
-//		          send_time: '2018-7-20  14:00'
-//		        },
-//		        {
-//		          theme: '试用期绩效表提醒',
-//		          recipient: '张三',
-//		          interface: '李四',
-//		          category: '绩效表提醒',
-//		          copy_people: '王五',
-//		          send_time: '2018-7-21  14:00'
-//		        }
-	        ],
+	        tableData: [],
 	        pickerOptions2: {
 	          shortcuts: [ {
 	            text: '明天',
@@ -163,8 +147,8 @@
 	        currentPage:1,
 		    detailShow:false,
 	        selectedEmail:null,
-	        sortId:null,
-	        title:['所有分类','入职提醒','绩效表提醒','转正提醒','续签合同','工作年限贺卡'],
+	        special:null,
+	        title:['试用期转正','合同续签','绩效表填写','新员工入职提醒','年限贺卡提醒','工作年限贺卡'],
 	      }
 	    },
 	    methods: {
@@ -184,36 +168,35 @@
 		    //初始化
 		    $_initialize() {
 		    	let index = this.$route.params.id;
-		    	this.table_title = this.title[index];
-		   		if(this.$route.params.id == 0){
-		   			this.sortId = "";
-		   		}else{
-		   			this.sortId = this.$route.params.id;
-		   		}
-//		   		this.$_getData();
+		    	this.table_title = this.title[index-1];
+		   		this.sortId = this.$route.params.id;
+		   		this.special = this.$route.params.isSpecial;
+		   		this.$_getData();
 		    },
 		    //获取数据
-//		    $_getData() {
-//				let para = {
-//					pageNum: this.page,
-//					pageSize: this.pageSize,
-//					status:0,
-//					recipient: this.filters.name,
-//					operationId: this.sortId,
-//					satrtTime:"",
-//					endTime:""
-//				};
-//				if(this.filters.date!=''){
-//					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
-//					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
-//				}
-//				this.listLoading = true;
-//				getMailPage(para).then((res) => {
+		    $_getData() {
+				let para = {
+					pageNum: this.page,
+					pageSize: this.pageSize,
+					status:0,
+					isSpecial:this.special,
+					operationId: this.sortId,
+//					employeeName:this.filters.name,
+//					department:this.filters.depart, 
+//					recruitClass:this.filters.recruit
+				};
+				if(this.filters.date!=''){
+					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+				}
+				this.listLoading = true;
+				getMailPage(para).then((res) => {
 //					this.total = res.data.total;
 //					this.tableData = res.data.users;
-//					this.listLoading = false;
-//				});
-//			},
+					console.log(res)
+					this.listLoading = false;
+				});
+			},
 	    	//取消发送
 //	    	$_cancel:function(index,row){
 //	    		this.$confirm('取消后将不能恢复，确认取消发送吗?', '提示', {
@@ -273,11 +256,11 @@
 	    	handleCurrent(val) {
 	    		this.currentPage = val;//页数高亮
 				this.page = val;
-//				this.$_getData();
+				this.$_getData();
 			},
 			handleSizeChange(val) {
 				this.pageSize = val
-//				this.$_getData();
+				this.$_getData();
 		    },
 	    	
 	    },
@@ -289,9 +272,9 @@
 				this.$_initialize();
 	   			this.detailShow = false;
 	   		},
-	   		table_title(){
-	   			this.$_initialize();
-	   		}
+//	   		table_title(){
+//	   			this.$_initialize();
+//	   		}
 	    },
 	    components: {
 	    	emailDetail

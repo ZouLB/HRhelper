@@ -18,7 +18,7 @@
 						<i class="el-icon-hr-sent-"></i>
 						<span slot="title">待发送邮件</span>
 					</template>
-					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+v.id">
+					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+v.id+'/'+v.isSpecial">
 					<!--<i class="el-submenu__icon-arrow el-icon-arrow-right"></i>-->
 					{{v.operationName}}
 					</el-menu-item>
@@ -29,7 +29,7 @@
 						<i class="el-icon-hr-sent"></i>
 						<span slot="title">已发送邮件</span>
 					</template>
-					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/sent/'+v.id">
+					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/sent/'+v.id+'/'+v.isSpecial">
 						{{v.operationName}}
 					</el-menu-item>
 				</el-submenu>
@@ -67,24 +67,8 @@
 				isCollapse: false,
 				isRouter:true,
 //				['所有分类','入职提醒','绩效表提醒','转正提醒','续签合同','工作年限贺卡']
-				title:[{
-					id:1,
-					operationName:"入职提醒"
-				},{
-					id:2,
-					operationName:"绩效表提醒"
-				},{
-					id:3,
-					operationName:"转正提醒"
-				},{
-					id:4,
-					operationName:"续签合同"
-				},{
-					id:5,
-					operationName:"工作年限贺卡"
-				}
-				],
-				defaultActive:"/index/waitSend/1",
+				title:[],
+				defaultActive:"/index/waitSend/1/1",
 				screenWidth: document.body.clientWidth
 			}
 		},
@@ -102,9 +86,9 @@
                     that.screenWidth = window.screenWidth
                 })()
             }
-//          getMenuList().then((res) => {
-//				this.title = res.data.resultEntity;
-//			});
+            getMenuList().then((res) => {
+				this.title = res.data.resultEntity;
+			});
 
 		},
 		watch:{

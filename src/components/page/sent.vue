@@ -53,13 +53,13 @@
 				    <el-table-column property="recipient" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='转正提醒'" property="recipient" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='试用期转正'" property="recipient" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--绩效-->
-				    <el-table-column v-if="table_title=='绩效表提醒'" property="recipient" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='绩效表填写'" property="recipient" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--续签-->
-				    <el-table-column v-if="table_title=='续签合同'" property="recipient" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='合同续签'" property="recipient" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    
 				    <el-table-column property="mailName" label="邮件主题" show-overflow-tooltip></el-table-column>
@@ -67,7 +67,7 @@
 				    <el-table-column property="copyPeople" label="抄送人" width="80" show-overflow-tooltip></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='转正提醒'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
+				    <el-table-column v-if="table_title=='试用期转正'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
 				    
 				    <el-table-column property="sendTime" label="发送时间" width="150" show-overflow-tooltip sortable></el-table-column>
 				    <el-table-column fixed="right" property="opera" label="操作" width="80">
@@ -106,7 +106,7 @@
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
 	//, removeMail, batchRemoveMail 
-//	import { getMailPage} from '../../api/api';
+	import { getMailPage} from '../../api/api';
 	
   	export default {
 	    data() {
@@ -155,8 +155,8 @@
 	        currentPage:1,
 	        detailShow:false,
 	        selectedEmail:null,
-	        sortId:null,
-	        title:['所有分类','入职提醒','绩效表提醒','转正提醒','续签合同','工作年限贺卡'],
+	        special:null,
+	        title:['试用期转正','合同续签','绩效表填写','新员工入职提醒','年限贺卡提醒','工作年限贺卡'],
 	      }
 	    },
 	    methods: {
@@ -169,13 +169,10 @@
 		    //初始化
 		    $_initialize() {
 		    	let index = this.$route.params.id;
-		    	this.table_title = this.title[index];
-		   		if(this.$route.params.id == 0){
-		   			this.sortId = "";
-		   		}else{
-		   			this.sortId = this.$route.params.id;
-		   		}
-//		   		this.$_getData();
+		    	this.table_title = this.title[index-1];
+		   		this.sortId = this.$route.params.id;
+		   		this.special = this.$route.params.isSpecial;
+		   		this.$_getData();
 		    },
 		    //进入邮件详情
 		    $_checkDetail(item){
@@ -187,28 +184,28 @@
 		      	this.detailShow = false;
 		    },
 		    //获取数据
-//		    $_getData() {
-//				let para = {
-//					pageNum: this.page,
-//					pageSize: this.pageSize,
-//					status:1,
-//					recipient: this.filters.name,
-//					operationId: this.sortId,
-//					satrtTime:"",
-//					endTime:""
-//				};
-//				if(this.filters.date!=''){
-//					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
-//					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
-//				}
-//				this.listLoading = true;
-//				getMailPage(para).then((res) => {
-//					console.log(res);
-//					this.total = res.data.resultEntity.total;
-//					this.tableData = res.data.resultEntity.list;
-//					this.listLoading = false;
-//				});
-//			},
+		    $_getData() {
+				let para = {
+					pageNum: this.page,
+					pageSize: this.pageSize,
+					status:1,
+					recipient: this.filters.name,
+					operationId: this.sortId,
+					satrtTime:"",
+					endTime:""
+				};
+				if(this.filters.date!=''){
+					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+				}
+				this.listLoading = true;
+				getMailPage(para).then((res) => {
+					console.log(res);
+					this.total = res.data.resultEntity.total;
+					this.tableData = res.data.resultEntity.list;
+					this.listLoading = false;
+				});
+			},
 	    	//删除
 //	    	$_del:function(index,row){
 //	    		this.$confirm('删除后将不能恢复，确认删除邮件吗?', '提示', {
@@ -272,11 +269,11 @@
 	    	handleCurrent(val) {
 	    		this.currentPage = val;//页数高亮
 				this.page = val;
-//				this.$_getData();
+				this.$_getData();
 			},
 			handleSizeChange(val) {
 				this.pageSize = val;
-//				this.$_getData();
+				this.$_getData();
 		    },
 	    	
 	    },

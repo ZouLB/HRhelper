@@ -23,9 +23,9 @@ export default new Router({
 			path:'/index',
 			component:index,
 				children:[
-					{path: '/index', redirect: '/index/sent/0' },
-					{path:'sent/:id',name:sent,component:sent},
-					{path:'waitSend/:id',name:waitSend,component:waitSend},
+					{path: '/index', redirect: '/index/waitSend/1/1' },
+					{path:'sent/:id/:isSpecial',name:sent,component:sent},
+					{path:'waitSend/:id/:isSpecial',name:waitSend,component:waitSend},
 					{path:'business',component:business},
 					{path:'templateWrite',component:templateWrite},
 				]
