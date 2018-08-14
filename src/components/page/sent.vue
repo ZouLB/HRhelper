@@ -10,7 +10,7 @@
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<!--<input type="text" placeholder="搜索" v-model="filters.name" @keyup="$_getData()"/>-->
 				<el-input placeholder="员工姓名" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-input v-if="table_title!='续签合同'" placeholder="所属部门" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input v-if="table_title!='续签合同'" placeholder="所属部门" clearable size="small" v-model="filters.depart"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-date-picker
 			      v-model="filters.date"
 			      type="daterange"
@@ -21,7 +21,7 @@
 			      end-placeholder="结束日期"
 			      :picker-options="pickerOptions2">
 			    </el-date-picker>
-			    <el-select v-if="table_title=='绩效表提醒'" v-model="filters.sortSearch" clearable placeholder="招聘类型">
+			    <el-select v-if="table_title=='绩效表提醒'" v-model="filters.recruit" clearable placeholder="招聘类型">
 				    <!--<el-option
 				      v-for="item in sort"
 				      :key="item.value"
@@ -48,18 +48,18 @@
 				    @selection-change="handleSelectionChange"
 				    style="width: 100%;">
 				    <el-table-column type="selection" width="50"></el-table-column>
-				    <el-table-column property="recipient" label="员工姓名" width="80" show-overflow-tooltip></el-table-column>
-				    <el-table-column property="recipient" label="所属部门" width="130" show-overflow-tooltip sortable></el-table-column>
-				    <el-table-column property="recipient" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="employeeName" label="员工姓名" width="80" show-overflow-tooltip></el-table-column>
+				    <el-table-column property="department" label="所属部门" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="entryDay" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='试用期转正'" property="recipient" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='试用期转正'" property="planFullmenberPath" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--绩效-->
-				    <el-table-column v-if="table_title=='绩效表填写'" property="recipient" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='绩效表填写'" property="recruitClass" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--续签-->
-				    <el-table-column v-if="table_title=='合同续签'" property="recipient" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='合同续签'" property="contractDay" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    
 				    <el-table-column property="mailName" label="邮件主题" show-overflow-tooltip></el-table-column>
@@ -105,8 +105,7 @@
 <script>
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
-	//, removeMail, batchRemoveMail 
-	import { getMailPage} from '../../api/api';
+	import { getMailPage, removeMail, batchRemoveMail} from '../../api/api';
 	
   	export default {
 	    data() {
@@ -114,8 +113,9 @@
 	      	table_title:null,
 	      	filters:{
 	      		name:'',
+	      		depart:'',
 	      		date:'',
-	      		sortSearch:''
+	      		recruit:''
 	      	},
 	        tableData: [],
 	        pickerOptions2: {
@@ -207,64 +207,64 @@
 				});
 			},
 	    	//删除
-//	    	$_del:function(index,row){
-//	    		this.$confirm('删除后将不能恢复，确认删除邮件吗?', '提示', {
-//					type: 'warning'
-//				}).then(() => {
-//					this.listLoading = true;
-//					let para = { id: row.id };
-//					removeMail(para).then((res) => {
-//						this.listLoading = false;
-//						this.$message({
-//							message: '删除成功',
-//							type: 'success'
-//						});
-//						this.$_getData();
-//						//不调用接口删除的方式
-////						let tmpIndex = this.tableData.findIndex(function(item) {
-////					        return item.id == row.id;
-////					    });
-////					    if (tmpIndex > -1) {
-////					        this.tableData.removeAt(tmpIndex);
-////					    } 
-//					});
-//					
-//				}).catch(() => {
-//					
-//				});
-//	    	},
-//	    	//批量删除
-//	    	$_batchDel() {
-//	    		var self = this;
-//			    if (this.tableSelect.length == 0) {
-//			        this.$alert("请选择需要删除的邮件", "提示", {
-//			            confirmButtonText: "确定",
-//			            type: "info"
-//			        });
-//			        return;
-//			    }
-//			    var ids = this.tableSelect.map(item => item.id).toString();//用逗号隔开的字符串
-//			    this.$confirm("删除后将不能恢复，确认删除所选邮件吗?", "提示", {
-//			        type: "warning"
-//			    })
-//			    .then(() => {
-//			    	this.listLoading = true;
-//					let para = { ids: ids };
-//					batchRemoveMail(para).then((res) => {
-//						this.listLoading = false;
-//						this.$message({
-//							message: '删除成功',
-//							type: 'success'
-//						});
-//						this.$_getData();
-//						
-////						let temIndex = this.tableData.findIndex(function(item){
-////							return item.id = this.tableSelect.id
-////						})
-//					});
-//			    })
-//			    .catch(() => {});
-//	    	},
+	    	$_del:function(index,row){
+	    		this.$confirm('删除后将不能恢复，确认删除邮件吗?', '提示', {
+					type: 'warning'
+				}).then(() => {
+					this.listLoading = true;
+					let para = { mailId: row.id };
+					removeMail(para).then((res) => {
+						this.listLoading = false;
+						this.$message({
+							message: '删除成功',
+							type: 'success'
+						});
+						this.$_getData();
+						//不调用接口删除的方式
+//						let tmpIndex = this.tableData.findIndex(function(item) {
+//					        return item.id == row.id;
+//					    });
+//					    if (tmpIndex > -1) {
+//					        this.tableData.removeAt(tmpIndex);
+//					    } 
+					});
+					
+				}).catch(() => {
+					
+				});
+	    	},
+	    	//批量删除
+	    	$_batchDel() {
+	    		var self = this;
+			    if (this.tableSelect.length == 0) {
+			        this.$alert("请选择需要删除的邮件", "提示", {
+			            confirmButtonText: "确定",
+			            type: "info"
+			        });
+			        return;
+			    }
+			    var ids = this.tableSelect.map(item => item.id).toString();//用逗号隔开的字符串
+			    this.$confirm("删除后将不能恢复，确认删除所选邮件吗?", "提示", {
+			        type: "warning"
+			    })
+			    .then(() => {
+			    	this.listLoading = true;
+					let para = { mailIds: ids };
+					batchRemoveMail(para).then((res) => {
+						this.listLoading = false;
+						this.$message({
+							message: '删除成功',
+							type: 'success'
+						});
+						this.$_getData();
+						
+//						let temIndex = this.tableData.findIndex(function(item){
+//							return item.id = this.tableSelect.id
+//						})
+					});
+			    })
+			    .catch(() => {});
+	    	},
 	    	//分页
 	    	handleCurrent(val) {
 	    		this.currentPage = val;//页数高亮

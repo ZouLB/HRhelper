@@ -14,16 +14,12 @@
 					<el-form-item label="规则名称" prop="name">
 						<el-input v-model="businessItem.name" auto-complete="off" placeholder="请输入规则名称"></el-input>
 					</el-form-item>
-					<el-form-item label="接口人" prop="principal">
-						<!--<el-select v-model="businessItem.principal" multiple filterable allow-create default-first-option placeholder="请选择或输入负责人">
-							<el-option v-for="(item,i) in hrForm" :key="i" :label="item" :value="item">
-							</el-option>
-						</el-select>-->
+					<!--<el-form-item label="接口人" prop="principal">
 						<el-select v-model="businessItem.principal" placeholder="请选择接口人">
 					      <el-option v-for="(item,i) in hrForm" :key="i" :label="item" :value="item">
 							</el-option>
 					    </el-select>
-					</el-form-item>
+					</el-form-item>-->
 					<el-form-item label="业务类型" prop="principal">
 						<el-select v-model="businessItem.principal" placeholder="请选择业务类型">
 					      <el-option v-for="(item,i) in hrForm" :key="i" :label="item" :value="item">
@@ -79,9 +75,9 @@
 		
 					</el-form-item>
 					
-					<el-form-item label="备注" prop="describe">
+					<!--<el-form-item label="备注" prop="describe">
 						<el-input type="textarea" :rows="4" auto-complete="off"></el-input>
-					</el-form-item>
+					</el-form-item>-->
 		
 				</el-form>
 				</el-tab-pane>

@@ -7,11 +7,11 @@
 		</div>
 		
 		<div class="message">
-			<h3>{{emailItem.mail_name}}</h3>
+			<h3>{{emailItem.mailName}}</h3>
 			<ul>
-				<li>收件人：{{emailItem.recipient}}&lt;{{emailItem.recipient_address}}&gt;</li>
-				<li>时间：{{emailItem.send_time}}</li>
-				<li>接口人：{{emailItem.sender}}&lt;{{emailItem.sender_address}}&gt;</li>
+				<li>收件人：{{emailItem.recipient}}&lt;{{emailItem.recipientAddress}}&gt;</li>
+				<li>时间：{{emailItem.sendTime}}</li>
+				<li>接口人：{{emailItem.principal}}&lt;{{emailItem.principalAddress}}&gt;</li>
 				<li>附件：</li>
 			</ul>
 		</div>

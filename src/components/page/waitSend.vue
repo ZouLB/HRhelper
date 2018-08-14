@@ -46,18 +46,18 @@
 				    @selection-change="handleSelectionChange"
 				    style="width: 100%;">
 				    <el-table-column type="selection" width="50"></el-table-column>
-				    <el-table-column property="recipient" label="员工姓名" width="80" show-overflow-tooltip></el-table-column>
-				    <el-table-column property="recipient" label="所属部门" width="130" show-overflow-tooltip sortable></el-table-column>
-				    <el-table-column property="recipient" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="employeeName" label="员工姓名" width="80" show-overflow-tooltip></el-table-column>
+				    <el-table-column property="department" label="所属部门" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="entryDay" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='试用期转正'" property="recipient" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='试用期转正'" property="planFullmenberPath" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--绩效-->
-				    <el-table-column v-if="table_title=='绩效表填写'" property="recipient" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='绩效表填写'" property="recruitClass" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--续签-->
-				    <el-table-column v-if="table_title=='合同续签'" property="recipient" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='合同续签'" property="contractDay" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    
 				    <el-table-column property="mailName" label="邮件主题" show-overflow-tooltip></el-table-column>
@@ -67,7 +67,7 @@
 				    <!--转正-->
 				    <!--<el-table-column v-if="table_title=='转正提醒'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>-->
 				    
-				    <el-table-column property="sendTime" label="发送时间" width="150" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="planSendTime" label="发送时间" width="150" show-overflow-tooltip sortable></el-table-column>
 				    <el-table-column fixed="right" property="opera" label="操作" width="80">
 				    	<template slot-scope="scope" >
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
@@ -101,8 +101,7 @@
 <script>
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
-//	, removeMail, batchRemoveMail 
-	import { getMailPage} from '../../api/api';
+	import { getMailPage, cancelSendMail, batchCancelSendMail } from '../../api/api';
 	
   	export default {
 	    data() {
@@ -185,9 +184,18 @@
 //					department:this.filters.depart, 
 //					recruitClass:this.filters.recruit
 				};
-				if(this.filters.date!=''){
-					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
-					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+				var startTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+				var endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+				
+				if(this.filters.date!=''&&this.table_title=="绩效表填写"){
+					para.contractDayStart = startTime;
+					para.contractDayEnd = endTime;
+				}else if(this.filters.date!=''&&this.table_title=="转正提醒"){
+					para.planFullmenberDayStart = startTime;
+					para.planFullmenberDayEnd = endTime;
+				}else if(this.filters.date!=''){
+					para.entryDayStart = startTime;
+					para.entryDayEnd = endTime;
 				}
 				this.listLoading = true;
 				getMailPage(para).then((res) => {
@@ -203,8 +211,8 @@
 //					type: 'warning'
 //				}).then(() => {
 //					this.listLoading = true;
-//					let para = { id: row.id };
-//					removeMail(para).then((res) => {
+//					let para = { mailId: row.id };
+//					cancelSendMail(para).then((res) => {
 //						this.listLoading = false;
 //						this.$message({
 //							message: '取消成功',
@@ -240,8 +248,8 @@
 //			    })
 //			    .then(() => {
 //			    	this.listLoading = true;
-//					let para = { ids: ids };
-//					batchRemoveMail(para).then((res) => {
+//					let para = { mailIds: ids };
+//					batchCancelSendMail(para).then((res) => {
 //						this.listLoading = false;
 //						this.$message({
 //							message: '取消发送成功',
