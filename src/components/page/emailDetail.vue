@@ -1,5 +1,5 @@
 <template>
-	<section>
+	<div>
 		<div class="head clearfix">
 			<span>邮件详情</span>
 			<el-button type="primary" size="small" plain @click="$_onBack">返回</el-button>
@@ -10,7 +10,7 @@
 			<h3>{{emailItem.mailName}}</h3>
 			<ul>
 				<li>收件人：{{emailItem.recipient}}&lt;{{emailItem.recipientAddress}}&gt;</li>
-				<li>时间：{{emailItem.sendTime}}</li>
+				<li>时间：{{emailItem.sendTime||emailItem.planSendTime}}</li>
 				<li>接口人：{{emailItem.principal}}&lt;{{emailItem.principalAddress}}&gt;</li>
 				<li>附件：</li>
 			</ul>
@@ -30,7 +30,7 @@
             	</p >
         	</div>
 		</div>
-	</section>
+	</div>
 </template>
 
 <script>

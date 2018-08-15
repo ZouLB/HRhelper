@@ -10,9 +10,9 @@
 		<div class="content">
 			<el-tabs v-model="editableTabsValue" type="card">
 				<el-tab-pane label="基本信息" name="1">
-			  	<el-form :model="businessItem" label-width="90px" ref="businessItem" :rules="rules">
+			  	<el-form label-width="90px" ref="businessItem" :rules="rules">
 					<el-form-item label="规则名称" prop="name">
-						<el-input v-model="businessItem.name" auto-complete="off" placeholder="请输入规则名称"></el-input>
+						<el-input v-model="businessItem.ruleName" auto-complete="off" placeholder="请输入规则名称"></el-input>
 					</el-form-item>
 					<!--<el-form-item label="接口人" prop="principal">
 						<el-select v-model="businessItem.principal" placeholder="请选择接口人">
@@ -20,18 +20,18 @@
 							</el-option>
 					    </el-select>
 					</el-form-item>-->
-					<el-form-item label="业务类型" prop="principal">
-						<el-select v-model="businessItem.principal" placeholder="请选择业务类型">
-					      <el-option v-for="(item,i) in hrForm" :key="i" :label="item" :value="item">
+					<el-form-item label="业务类型" prop="operationName">
+						<el-select v-model="businessItem.operationName" placeholder="请选择业务类型">
+					      <el-option v-for="(item,i) in sortForm" :key="i" :label="item.operationName" :value="item.operationName">
 							</el-option>
 					    </el-select>
 					</el-form-item>
 					
 					<el-form-item label="参照时间">
-						<el-radio-group v-model="value">
-					      	<el-radio label="入职后"></el-radio>
-					      	<el-radio label="转正前"></el-radio>
-					      	<el-radio label="合同结束前"></el-radio>
+						<el-radio-group v-model="tableDetail.ruleMethod">
+					      	<el-radio label="入职后" value="1"></el-radio>
+					      	<el-radio label="合同结束前" value="2"></el-radio>
+					      	<el-radio label="转正前" value="3"></el-radio>
 					    </el-radio-group>
 					</el-form-item>
 					
@@ -58,7 +58,7 @@
 						</el-select>-->
 						<el-input-number v-model="year" size="small" controls-position="right" :min="0" :max="10"></el-input-number>&nbsp;年&nbsp;
 						<el-input-number v-model="month" size="small" controls-position="right" :min="0" :max="11"></el-input-number>&nbsp;月&nbsp;
-						<el-input-number v-model="day" size="small" controls-position="right" :min="0" :max="31"></el-input-number>&nbsp;日&nbsp;&nbsp;
+						<el-input-number v-model="tableDetail.distanceD" size="small" controls-position="right" :min="0" :max="31"></el-input-number>&nbsp;日&nbsp;&nbsp;
 					
 						<el-time-select
 						  v-model="value3"
@@ -97,7 +97,8 @@
 
 <script>
 	import util from '../../assets/js/util.js';
-	import { quillEditor } from 'vue-quill-editor'
+	import { quillEditor } from 'vue-quill-editor';
+	import { getMenuList, getRuleDetail } from '../../api/api';
 	
   	export default {
 	    data() {
@@ -108,7 +109,8 @@
 		        	rule: [{ required: true, message: '请输入业务规则', trigger: 'change' }],
 		        },
 		        saveLoading:false,
-		        hrForm:['张三','李四','王五'],//获取所有人事部的HR
+		        sortForm:[],
+		        tableDetail:[],
 		        year:0,
 		        month:0,
 		        day:1,
@@ -244,7 +246,14 @@
 		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">答：欢迎咨询温柔可爱的HR小姐姐：）</span></h3><h3 class="ql-align-justify">	
 		        			<span style="color: rgb(112, 48, 160);">HR小姐姐祝您工作顺利！生活愉快！幸福感爆棚！开启Bingo旅程！</span></h3>
 		        			<p class="ql-align-justify"><br></p><p class="ql-align-justify"><br></p><p class="ql-align-right"><br></p><p class="ql-align-right">❤人力资源部❤</p><h3><br></h3></div>`
-	      	}, 300)
+	      	}, 300);
+	      	getMenuList().then((res) => {
+				this.sortForm = res.data.resultEntity;
+			});
+			getRuleDetail({ruleId:this.businessItem.id}).then((res) => {
+				this.tableDetail = res.data.resultEntity;
+	      		console.log(tableDetail);
+			});
 	    },
 	    components: {
 		    quillEditor
@@ -264,7 +273,7 @@
 	.el-form{
         position: absolute;
         left: 200px;
-        top: 40px;
+        top: 100px;
         max-width: 555px;
         .el-select,.el-input,.el-textarea{
             width: 420px;

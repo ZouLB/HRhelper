@@ -5,10 +5,10 @@
 			<div class="head clearfix">
 				<span>待发送文件<i class="el-icon-arrow-right"></i>{{table_title}}</span>
 				<el-button type="primary" size="small">导出</el-button>
-				<el-button type="danger" size="small" plain @click="$_batchDel">删除</el-button>
+				<el-button type="danger" size="small" plain @click="$_batchCancel">取消发送</el-button>
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<el-input placeholder="员工姓名" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-input v-if="table_title!='续签合同'" placeholder="所属部门" clearable size="small" v-model="filters.depart"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input v-if="table_title!='合同续签'" placeholder="所属部门" clearable size="small" v-model="filters.depart"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-date-picker
 			      v-model="filters.date"
 			      type="daterange"
@@ -19,7 +19,7 @@
 			      end-placeholder="结束日期"
 			      :picker-options="pickerOptions2">
 			    </el-date-picker>
-			    <el-select v-if="table_title=='绩效表提醒'" v-model="filters.recruit" clearable placeholder="招聘类型">
+			    <el-select v-if="table_title=='绩效表填写'" v-model="filters.recruit" clearable placeholder="招聘类型">
 				    <!--<el-option
 				      v-for="item in sort"
 				      :key="item.value"
@@ -48,10 +48,10 @@
 				    <el-table-column type="selection" width="50"></el-table-column>
 				    <el-table-column property="employeeName" label="员工姓名" width="80" show-overflow-tooltip></el-table-column>
 				    <el-table-column property="department" label="所属部门" width="130" show-overflow-tooltip sortable></el-table-column>
-				    <el-table-column property="entryDay" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="entryDay" label="入职时间" width="115" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='试用期转正'" property="planFullmenberPath" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='试用期转正'" property="planFullmenberPath" label="拟转正时间" width="115" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--绩效-->
 				    <el-table-column v-if="table_title=='绩效表填写'" property="recruitClass" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
@@ -67,17 +67,17 @@
 				    <!--转正-->
 				    <!--<el-table-column v-if="table_title=='转正提醒'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>-->
 				    
-				    <el-table-column property="planSendTime" label="发送时间" width="150" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="planSendTime" label="发送时间" width="145" show-overflow-tooltip sortable></el-table-column>
 				    <el-table-column fixed="right" property="opera" label="操作" width="80">
 				    	<template slot-scope="scope" >
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
-				    		<i class="el-icon-delete" title="删除" @click="$_del(scope.$index, scope.row)"></i>
+				    		<i class="el-icon-hr-cancel" title="取消发送" @click="$_cancel(scope.$index, scope.row)"></i>
 						</template>
 				    </el-table-column>
 				</el-table>
 			</div>
 			<div class="footer">
-				<span>接口人：</span>
+				<span>接口人：{{principal}}</span>
 				<!--分页-->
 				<el-pagination
 					layout="total,sizes, prev, pager, next"
@@ -147,6 +147,7 @@
 		    detailShow:false,
 	        selectedEmail:null,
 	        special:null,
+	        principal:"",//接口人
 	        title:['试用期转正','合同续签','绩效表填写','新员工入职提醒','年限贺卡提醒','工作年限贺卡'],
 	      }
 	    },
@@ -180,86 +181,89 @@
 					status:0,
 					isSpecial:this.special,
 					operationId: this.sortId,
-//					employeeName:this.filters.name,
-//					department:this.filters.depart, 
-//					recruitClass:this.filters.recruit
-				};
-				var startTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
-				var endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+					employeeName:this.filters.name,
+					department:this.filters.depart, 
+					recruitClass:this.filters.recruit
+				};		
 				
-				if(this.filters.date!=''&&this.table_title=="绩效表填写"){
+				if(this.filters.date!=''){
+					var startTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+					var endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+					para.entryDayStart = startTime;
+					para.entryDayEnd = endTime;
+				}else if(this.filters.date!=''&&this.table_title=="绩效表填写"){
 					para.contractDayStart = startTime;
 					para.contractDayEnd = endTime;
 				}else if(this.filters.date!=''&&this.table_title=="转正提醒"){
 					para.planFullmenberDayStart = startTime;
 					para.planFullmenberDayEnd = endTime;
-				}else if(this.filters.date!=''){
-					para.entryDayStart = startTime;
-					para.entryDayEnd = endTime;
 				}
 				this.listLoading = true;
 				getMailPage(para).then((res) => {
-//					this.total = res.data.total;
-//					this.tableData = res.data.users;
-					console.log(res)
+					this.total = res.resultEntity.total;
+					this.tableData = res.resultEntity.list;
+					if(res.resultEntity && res.resultEntity.list.length>0){
+						this.principal = res.resultEntity.list[0].principal;
+					}
+//					console.log(res.resultEntity.list)
 					this.listLoading = false;
 				});
 			},
 	    	//取消发送
-//	    	$_cancel:function(index,row){
-//	    		this.$confirm('取消后将不能恢复，确认取消发送吗?', '提示', {
-//					type: 'warning'
-//				}).then(() => {
-//					this.listLoading = true;
-//					let para = { mailId: row.id };
-//					cancelSendMail(para).then((res) => {
-//						this.listLoading = false;
-//						this.$message({
-//							message: '取消成功',
-//							type: 'success'
-//						});
-//						this.$_getData();
-//						//不调用接口删除的方式
-////						let tmpIndex = this.tableData.findIndex(function(item) {
-////					        return item.id == row.id;
-////					    });
-////					    if (tmpIndex > -1) {
-////					        this.tableData.removeAt(tmpIndex);
-////					    } 
-//					});
-//					
-//				}).catch(() => {
-//					
-//				});
-//	    	},
-//	    	//批量取消
-//	    	$_batchCancel() {
-//	    		var self = this;
-//			    if (this.tableSelect.length == 0) {
-//			        this.$alert("请选择需要取消发送的邮件", "提示", {
-//			            confirmButtonText: "确定",
-//			            type: "info"
-//			        });
-//			        return;
-//			    }
-//			    var ids = this.tableSelect.map(item => item.id).toString();
-//			    this.$confirm("取消后将不能恢复，确认取消发送所选邮件吗?", "提示", {
-//			        type: "warning"
-//			    })
-//			    .then(() => {
-//			    	this.listLoading = true;
-//					let para = { mailIds: ids };
-//					batchCancelSendMail(para).then((res) => {
-//						this.listLoading = false;
-//						this.$message({
-//							message: '取消发送成功',
-//							type: 'success'
-//						});
-//						this.$_getData();
-//					});
-//			    })
-//			    .catch(() => {});
-//	    	},
+	    	$_cancel:function(index,row){
+	    		this.$confirm('取消后将不能恢复，确认取消发送吗?', '提示', {
+					type: 'warning'
+				}).then(() => {
+					this.listLoading = true;
+					let para = { mailId: row.id };
+					cancelSendMail(para).then((res) => {
+						this.listLoading = false;
+						this.$message({
+							message: '取消成功',
+							type: 'success'
+						});
+						this.$_getData();
+						//不调用接口删除的方式
+//						let tmpIndex = this.tableData.findIndex(function(item) {
+//					        return item.id == row.id;
+//					    });
+//					    if (tmpIndex > -1) {
+//					        this.tableData.removeAt(tmpIndex);
+//					    } 
+					});
+					
+				}).catch(() => {
+					
+				});
+	    	},
+	    	//批量取消
+	    	$_batchCancel() {
+	    		var self = this;
+			    if (this.tableSelect.length == 0) {
+			        this.$alert("请选择需要取消发送的邮件", "提示", {
+			            confirmButtonText: "确定",
+			            type: "info"
+			        });
+			        return;
+			    }
+			    var ids = this.tableSelect.map(item => item.id).toString();
+			    this.$confirm("取消后将不能恢复，确认取消发送所选邮件吗?", "提示", {
+			        type: "warning"
+			    })
+			    .then(() => {
+			    	this.listLoading = true;
+					let para = { mailIds: ids };
+					batchCancelSendMail(para).then((res) => {
+						this.listLoading = false;
+						this.$message({
+							message: '取消发送成功',
+							type: 'success'
+						});
+						this.$_getData();
+					});
+			    })
+			    .catch(() => {});
+	    	},
 	    	//分页
 	    	handleCurrent(val) {
 	    		this.currentPage = val;//页数高亮
@@ -280,9 +284,14 @@
 				this.$_initialize();
 	   			this.detailShow = false;
 	   		},
-//	   		table_title(){
-//	   			this.$_initialize();
-//	   		}
+	   		table_title(){
+	   			
+		      		this.filters.name=''
+		      		this.filters.depart=''
+		      		this.filters.date=''
+		      		this.filters.recruit=''
+		      		this.$_initialize();
+	   		}
 	    },
 	    components: {
 	    	emailDetail

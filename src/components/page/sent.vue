@@ -10,7 +10,7 @@
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<!--<input type="text" placeholder="搜索" v-model="filters.name" @keyup="$_getData()"/>-->
 				<el-input placeholder="员工姓名" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
-				<el-input v-if="table_title!='续签合同'" placeholder="所属部门" clearable size="small" v-model="filters.depart"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+				<el-input v-if="table_title!='合同续签'" placeholder="所属部门" clearable size="small" v-model="filters.depart"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
 				<el-date-picker
 			      v-model="filters.date"
 			      type="daterange"
@@ -21,7 +21,7 @@
 			      end-placeholder="结束日期"
 			      :picker-options="pickerOptions2">
 			    </el-date-picker>
-			    <el-select v-if="table_title=='绩效表提醒'" v-model="filters.recruit" clearable placeholder="招聘类型">
+			    <el-select v-if="table_title=='绩效表填写'" v-model="filters.recruit" clearable placeholder="招聘类型">
 				    <!--<el-option
 				      v-for="item in sort"
 				      :key="item.value"
@@ -50,10 +50,10 @@
 				    <el-table-column type="selection" width="50"></el-table-column>
 				    <el-table-column property="employeeName" label="员工姓名" width="80" show-overflow-tooltip></el-table-column>
 				    <el-table-column property="department" label="所属部门" width="130" show-overflow-tooltip sortable></el-table-column>
-				    <el-table-column property="entryDay" label="入职时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="entryDay" label="入职时间" width="115" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='试用期转正'" property="planFullmenberPath" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='试用期转正'" property="planFullmenberPath" label="拟转正时间" width="115" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--绩效-->
 				    <el-table-column v-if="table_title=='绩效表填写'" property="recruitClass" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
@@ -69,7 +69,7 @@
 				    <!--转正-->
 				    <el-table-column v-if="table_title=='试用期转正'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
 				    
-				    <el-table-column property="sendTime" label="发送时间" width="150" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="sendTime" label="发送时间" width="145" show-overflow-tooltip sortable></el-table-column>
 				    <el-table-column fixed="right" property="opera" label="操作" width="80">
 				    	<template slot-scope="scope" >
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
@@ -80,7 +80,7 @@
 			</div>
 			
 			<div class="footer">
-				<span>接口人：</span>
+				<span>接口人：{{principal}}</span>
 				<!--分页-->
 				<el-pagination
 					layout="total,sizes, prev, pager, next"
@@ -156,6 +156,7 @@
 	        detailShow:false,
 	        selectedEmail:null,
 	        special:null,
+	        principal:"",//接口人
 	        title:['试用期转正','合同续签','绩效表填写','新员工入职提醒','年限贺卡提醒','工作年限贺卡'],
 	      }
 	    },
@@ -189,20 +190,33 @@
 					pageNum: this.page,
 					pageSize: this.pageSize,
 					status:1,
-					recipient: this.filters.name,
+					isSpecial:this.special,
 					operationId: this.sortId,
-					satrtTime:"",
-					endTime:""
-				};
+					employeeName:this.filters.name,
+					department:this.filters.depart, 
+					recruitClass:this.filters.recruit
+				};		
+				
 				if(this.filters.date!=''){
-					para.satrtTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
-					para.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+					var startTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+					var endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+					para.entryDayStart = startTime;
+					para.entryDayEnd = endTime;
+				}else if(this.filters.date!=''&&this.table_title=="绩效表填写"){
+					para.contractDayStart = startTime;
+					para.contractDayEnd = endTime;
+				}else if(this.filters.date!=''&&this.table_title=="转正提醒"){
+					para.planFullmenberDayStart = startTime;
+					para.planFullmenberDayEnd = endTime;
 				}
 				this.listLoading = true;
 				getMailPage(para).then((res) => {
-					console.log(res);
-					this.total = res.data.resultEntity.total;
-					this.tableData = res.data.resultEntity.list;
+					this.total = res.resultEntity.total;
+					this.tableData = res.resultEntity.list;
+					if(res.resultEntity && res.resultEntity.list.length>0){
+						this.principal = res.resultEntity.list[0].principal;
+					}
+					console.log(res.resultEntity.list)
 					this.listLoading = false;
 				});
 			},

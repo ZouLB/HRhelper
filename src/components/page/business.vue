@@ -32,11 +32,11 @@
 			        </el-form>
 			      </template>
 			    </el-table-column>
-			    <el-table-column property="name" label="规则名称" width="180" show-overflow-tooltip></el-table-column>
-			    <el-table-column property="name" label="业务类型" width="150" show-overflow-tooltip></el-table-column>
-			    <el-table-column property="rule" label="业务规则" ></el-table-column>			    
+			    <el-table-column property="ruleName" label="规则名称" width="180" show-overflow-tooltip></el-table-column>
+			    <el-table-column property="operationName" label="业务类型" width="150" show-overflow-tooltip></el-table-column>
+			    <el-table-column property="ruleSummary" label="业务规则" ></el-table-column>			    
 			   	<el-table-column property="principal" label="接口人" width="100" sortable></el-table-column>
-			    <el-table-column property="time" label="更新时间" width="140" sortable></el-table-column>
+			    <el-table-column property="updateTime" label="更新时间" width="145" sortable></el-table-column>
 			    <!--<el-table-column property="c" label="启用" width="140">
 			    	<template slot-scope="scope" >
 				    	<el-switch
@@ -77,6 +77,7 @@
 
 <script>
 	import businessEdit from "@/components/page/businessEdit";
+	import { getRuleList, removeRule } from '../../api/api';
 	
 	export default{
 		data() {
@@ -88,35 +89,36 @@
 				editVisible:false,
 				selectedBus:null,
 				currentRow:null,
-		        tableData: [
-		        	{
-			          name: '新员工入职提醒',
-			          principal: ['张三'],
-			          rule: '发送邮件的时间为员工入职后：一日',
-			          time:'2018-7-30 16:00',
-			          d: '入职提醒',
-			        },
-			        {
-			          name: '工作满一年贺卡',
-			          principal: ['张三 ','李四'],
-			          rule: '发送邮件的时间为员工入职后：一年',
-			          time:'2018-7-30 16:00',
-			          d: '工作年限贺卡',
-			        },
-		        ],
+		        tableData: [],
 			}
 		},
 		 methods: {
 	    	handleCurrentChange(val) {
 		        this.currentRow = val;
 		    },
+		    //获取数据
+		    $_getRule() {
+		    	this.listLoading = true;
+				getRuleList().then((res) => {
+					this.tableData = res.data.resultEntity;
+					this.listLoading = false;
+				});
+			},
 		    //删除
 	    	$_del:function(index,row){
 	    		this.$confirm('删除后将不能恢复，确认删除规则吗?', '提示', {
 					type: 'warning'
 				}).then(() => {
 					this.listLoading = true;
-					
+					let para = { ruleId: row.id };
+					removeRule(para).then((res) => {
+						this.listLoading = false;
+						this.$message({
+							message: '删除成功',
+							type: 'success'
+						});
+						this.$_getRule();
+					});
 					
 				}).catch(() => {
 					
@@ -139,6 +141,9 @@
 //	   			this.editVisible = false;
 //	   		}
 	  	},
+	  	mounted(){
+	   		this.$_getRule();
+		},
 		components: {
 		    businessEdit
 		}
@@ -152,6 +157,9 @@
 	
 	.editHead.head .el-input--small{
 		right: 100px;
+	}
+	.content{
+		bottom: 22px;
 	}
 	
 </style>
