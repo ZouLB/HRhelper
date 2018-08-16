@@ -31,6 +31,12 @@ export const removeRule = params => { return axios.delete(`${base}/rule/del`, { 
 //获取规则详情
 export const getRuleDetail = params => { return axios.get(`${base}/rule/get`, { params: params }); };
 
+//添加规则
+export const addRule = params => { return axios.post(`${base}/rule`, params).then(res => res.data); };
+
+
+
+
 
 //export const getMailPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
 

@@ -149,6 +149,7 @@
 	        special:null,
 	        principal:"",//接口人
 	        title:['试用期转正','合同续签','绩效表填写','新员工入职提醒','年限贺卡提醒','工作年限贺卡'],
+	      	
 	      }
 	    },
 	    methods: {
@@ -185,7 +186,11 @@
 					department:this.filters.depart, 
 					recruitClass:this.filters.recruit
 				};		
-				
+//				if(this.filters.date==''){
+//					var startTime ='';
+//					var endTime = '';
+//				}
+				console.log(this.filters.date);
 				if(this.filters.date!=''){
 					var startTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
 					var endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');

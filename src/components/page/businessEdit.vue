@@ -4,15 +4,15 @@
 			<span>规则编辑</span>
 			<el-button type="primary" size="small" plain @click="$_onBack">返回</el-button>
 			<el-button type="primary" size="small" @click="$_onSave" :loading="saveLoading">保存</el-button>
-			<el-button v-if="editableTabsValue=='1'" type="primary" size="small" plain @click="addDomain">新增发送时间</el-button>
+			<!--<el-button v-if="editableTabsValue=='1'" type="primary" size="small" plain @click="addDomain">新增发送时间</el-button>-->
 		</div>
 		
 		<div class="content">
 			<el-tabs v-model="editableTabsValue" type="card">
 				<el-tab-pane label="基本信息" name="1">
-			  	<el-form label-width="90px" ref="businessItem" :rules="rules">
-					<el-form-item label="规则名称" prop="name">
-						<el-input v-model="businessItem.ruleName" auto-complete="off" placeholder="请输入规则名称"></el-input>
+			  	<el-form v-model="tableDetail" label-width="90px" ref="tableDetail" :rules="rules">
+					<el-form-item label="规则名称" prop="ruleName">
+						<el-input v-model="tableDetail.ruleName" auto-complete="off" placeholder="请输入规则名称"></el-input>
 					</el-form-item>
 					<!--<el-form-item label="接口人" prop="principal">
 						<el-select v-model="businessItem.principal" placeholder="请选择接口人">
@@ -20,33 +20,26 @@
 							</el-option>
 					    </el-select>
 					</el-form-item>-->
-					<el-form-item label="业务类型" prop="operationName">
-						<el-select v-model="businessItem.operationName" placeholder="请选择业务类型">
-					      <el-option v-for="(item,i) in sortForm" :key="i" :label="item.operationName" :value="item.operationName">
+					<el-form-item label="业务类型" prop="operationId">
+						<el-select v-model="tableDetail.operationId" placeholder="请选择业务类型">
+					      <el-option v-for="(item,i) in sortForm" :key="i" :label="item.operationName" :value="item.id">
+					      	<!--{{item.operationName}}-->
 							</el-option>
 					    </el-select>
 					</el-form-item>
 					
 					<el-form-item label="参照时间">
 						<el-radio-group v-model="tableDetail.ruleMethod">
-					      	<el-radio label="入职后" value="1"></el-radio>
-					      	<el-radio label="合同结束前" value="2"></el-radio>
-					      	<el-radio label="转正前" value="3"></el-radio>
+					      	<el-radio :label="'1'" >入职后</el-radio>
+					      	<el-radio :label="'2'">合同结束前</el-radio>
+					      	<el-radio :label="'3'" >转正前</el-radio>
 					    </el-radio-group>
 					</el-form-item>
 					
-					<el-form-item
+					<!--<el-form-item
 					    v-for="(domain, index) in dynamicValidateForm.domains"
 					    :label="'发送时间' + (index+1)"
-					    :key="domain.key">
-					    <!--<el-radio-group v-model="value">
-					      	<el-radio label="入职后"></el-radio>
-					      	<el-radio label="转正前"></el-radio>
-					      	<el-radio label="合同结束前"></el-radio>
-					    </el-radio-group>
-					    
-					    </br>-->
-					    <!--<span>入职后</span>-->
+					    :key="domain.key">-->
 					    
 					    <!--<el-select v-model="value" placeholder="请选择" class="selectTime">
 						    <el-option
@@ -56,8 +49,9 @@
 						      :value="item.value">
 						    </el-option>
 						</el-select>-->
-						<el-input-number v-model="year" size="small" controls-position="right" :min="0" :max="10"></el-input-number>&nbsp;年&nbsp;
-						<el-input-number v-model="month" size="small" controls-position="right" :min="0" :max="11"></el-input-number>&nbsp;月&nbsp;
+					<el-form-item label="发送时间">
+						<el-input-number v-model="tableDetail.distanceY" size="small" controls-position="right" :min="0" :max="10"></el-input-number>&nbsp;年&nbsp;
+						<el-input-number v-model="tableDetail.distanceM" size="small" controls-position="right" :min="0" :max="11"></el-input-number>&nbsp;月&nbsp;
 						<el-input-number v-model="tableDetail.distanceD" size="small" controls-position="right" :min="0" :max="31"></el-input-number>&nbsp;日&nbsp;&nbsp;
 					
 						<el-time-select
@@ -68,7 +62,7 @@
 						    step: '00:15',
 						    end: '19:00'
 						  }"
-						  placeholder="请选择">
+						  placeholder="请选择时间">
 						</el-time-select>
 					    <!--<el-button type="text" v-if="index==0" size="small" @click="addDomain">新增</el-button>-->
 					    <el-button type="text" v-if="index>0" size="small" @click.prevent="removeDomain(domain)" class="delBtn">删除</el-button>
@@ -83,7 +77,7 @@
 				</el-tab-pane>
 				<el-tab-pane label="邮件模板编写" name="2">
 					<quill-editor ref="myTextEditor"
-			            v-model="mailContent"
+			            v-model="tableDetail.modelContent"
 			            :options="editorOption">
 			        </quill-editor>
 				</el-tab-pane>
@@ -104,16 +98,16 @@
 	    data() {
 	     	return {
 	      		rules: {
-		        	name: [{ required: true, message: '请输入业务名称', trigger: 'change' }],
-		        	principal: [{ required: true, message: '请选择或输入负责人', trigger: 'change' }],
-		        	rule: [{ required: true, message: '请输入业务规则', trigger: 'change' }],
+//		        	ruleName: [{ required: true, message: '请输入规则名称', trigger: 'change' }],
+		        	operationId: [{ required: true, message: '请选择业务类型', trigger: 'change' }],
+//		        	rule: [{ required: true, message: '请输入业务规则', trigger: 'change' }],
 		        },
 		        saveLoading:false,
 		        sortForm:[],
 		        tableDetail:[],
 		        year:0,
 		        month:0,
-		        day:1,
+		        day:"1",
 		        hours:18,
 		        minutes:15,
 		        value3: null,
@@ -232,28 +226,32 @@
 	      	},
 	    },
 	    mounted() {
-	    	this.value3 = this.hours +':'+ this.minutes;
-	      	setTimeout(() => {
-	        	this.mailContent = `<div style="margin-left:40px;"><h3 class="ql-align-justify"><br></h3>
-		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">&emsp;&emsp;&emsp;Hi，</span></h3>
-		        			<h3 class="ql-align-justify">	<span style="color: rgb(112, 48, 160);">今天是加入品高的第一天，过得还惬意么?感受到品高的活力了么？真诚地祝您在公司一切愉快！</span></h3>
-		        			<h3 class="ql-align-justify">	<span style="color: rgb(112, 48, 160);">有什么需要帮忙的么？试试下面的方法？</span></h3>
-		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">1）想了解部门对自己工作绩效的期望？需要开通公司系统某个模块的权限？想了解业务的接口人？</span></h3>
-		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">答：直属部门经理可以帮到你！“LINK-工作指南“可以帮到你！</span></h3>
-		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">2） 想了解近段时间的工作安排？想尽快了解负责的业务、项目情况？</span></h3>
-		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">答：快去找你的导师帮忙吧！</span></h3><h3 class="ql-align-justify">
-		        			<span style="color: rgb(112, 48, 160);">3）入职提交的材料还有遗漏？社保公积金有疑惑？入职时介绍的办事流程还有疑惑？</span></h3>
-		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">答：欢迎咨询温柔可爱的HR小姐姐：）</span></h3><h3 class="ql-align-justify">	
-		        			<span style="color: rgb(112, 48, 160);">HR小姐姐祝您工作顺利！生活愉快！幸福感爆棚！开启Bingo旅程！</span></h3>
-		        			<p class="ql-align-justify"><br></p><p class="ql-align-justify"><br></p><p class="ql-align-right"><br></p><p class="ql-align-right">❤人力资源部❤</p><h3><br></h3></div>`
-	      	}, 300);
-	      	getMenuList().then((res) => {
+	    	getMenuList().then((res) => {
 				this.sortForm = res.data.resultEntity;
 			});
 			getRuleDetail({ruleId:this.businessItem.id}).then((res) => {
 				this.tableDetail = res.data.resultEntity;
-	      		console.log(tableDetail);
+	    		this.value3 = this.tableDetail.sendingHourofday +':'+ this.tableDetail.sendingMinofhour;
+//	      		setTimeout(() => {
+//		        	this.mailContent = this.tableDetail.modelContent;
+//		      	}, 300);
+	      		console.log(this.tableDetail);
 			});
+
+//	      	setTimeout(() => {
+//	        	this.mailContent = `<div style="margin-left:40px;"><h3 class="ql-align-justify"><br></h3>
+//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">&emsp;&emsp;&emsp;Hi，</span></h3>
+//		        			<h3 class="ql-align-justify">	<span style="color: rgb(112, 48, 160);">今天是加入品高的第一天，过得还惬意么?感受到品高的活力了么？真诚地祝您在公司一切愉快！</span></h3>
+//		        			<h3 class="ql-align-justify">	<span style="color: rgb(112, 48, 160);">有什么需要帮忙的么？试试下面的方法？</span></h3>
+//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">1）想了解部门对自己工作绩效的期望？需要开通公司系统某个模块的权限？想了解业务的接口人？</span></h3>
+//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">答：直属部门经理可以帮到你！“LINK-工作指南“可以帮到你！</span></h3>
+//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">2） 想了解近段时间的工作安排？想尽快了解负责的业务、项目情况？</span></h3>
+//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">答：快去找你的导师帮忙吧！</span></h3><h3 class="ql-align-justify">
+//		        			<span style="color: rgb(112, 48, 160);">3）入职提交的材料还有遗漏？社保公积金有疑惑？入职时介绍的办事流程还有疑惑？</span></h3>
+//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">答：欢迎咨询温柔可爱的HR小姐姐：）</span></h3><h3 class="ql-align-justify">	
+//		        			<span style="color: rgb(112, 48, 160);">HR小姐姐祝您工作顺利！生活愉快！幸福感爆棚！开启Bingo旅程！</span></h3>
+//		        			<p class="ql-align-justify"><br></p><p class="ql-align-justify"><br></p><p class="ql-align-right"><br></p><p class="ql-align-right">❤人力资源部❤</p><h3><br></h3></div>`
+//	      	}, 300);
 	    },
 	    components: {
 		    quillEditor
@@ -291,7 +289,7 @@
 		    display: inline;
 		}*/
 		.sentTime.el-date-editor{
-			width: 105px;
+			width: 136px; /*105*/
 		}
 		
 		.delBtn{
