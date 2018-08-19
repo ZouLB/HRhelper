@@ -2,7 +2,7 @@ import axios from 'axios';
 
 //http://10.200.202.36:8080/operation/getOperationMenu
 //let base = process.env.API_URL;
-let base = "http://10.200.202.36:8080";
+let base = "http://ccw.free.ngrok.cc";
 
 //获取菜单
 export const getMenuList = params => { return axios.get(`${base}/operation/getOperationMenu`, { params: params }); };
@@ -35,6 +35,20 @@ export const getRuleDetail = params => { return axios.get(`${base}/rule/get`, { 
 export const addRule = params => { return axios.post(`${base}/rule`, params).then(res => res.data); };
 
 
+//获取业务
+export const getBusList = params => { return axios.get(`${base}/operation/list`, { params: params }); };
+
+//获取业务负责人
+export const getHR = params => { return axios.get(`${base}/user/listPrincipal`, { params: params }); };
+
+//添加业务
+export const addBus = params => { return axios.post(`${base}/operation/add`, params).then(res => res.data); };
+
+//编辑业务
+export const editBus = params => { return axios.patch(`${base}/operation/update`, params).then(res => res.data); };
+
+//删除业务
+export const removeBus = params => { return axios.delete(`${base}/operation/del`, { params: params }); };
 
 
 

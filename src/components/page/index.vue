@@ -34,18 +34,18 @@
 					</el-menu-item>
 				</el-submenu>
 				
-				<el-menu-item index="/index/business">
+				<el-menu-item index="/index/management">
 					<i class="el-icon-hr-business2"></i>
-					<span slot="title">规则管理</span>
+					<span slot="title">业务管理</span>
 				</el-menu-item>
 				<!--<el-menu-item index="/index/templateWrite">
 					<i class="el-icon-hr-mail1"></i>
-					<span slot="title">邮件模板编写</span>
+					<span slot="title">业务管理</span>
 				</el-menu-item>-->
-				<!--<el-menu-item index="">
+				<el-menu-item index="">
 					<i class="el-icon-news"></i>
-					<span slot="title">审核管理</span>
-				</el-menu-item>-->
+					<span slot="title">帮助</span>
+				</el-menu-item>
 			</el-menu>
 	   </div>
 	    <div :class="['right',{'on':!isCollapse,'off':isCollapse}]">

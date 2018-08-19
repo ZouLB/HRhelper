@@ -49,27 +49,27 @@
 				    style="width: 100%;">
 				    <el-table-column type="selection" width="50"></el-table-column>
 				    <el-table-column property="employeeName" label="员工姓名" width="80" show-overflow-tooltip></el-table-column>
-				    <el-table-column property="department" label="所属部门" width="130" show-overflow-tooltip sortable></el-table-column>
-				    <el-table-column property="entryDay" label="入职时间" width="115" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="department" label="所属部门" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="entryDay" label="入职时间" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='试用期转正'" property="planFullmenberPath" label="拟转正时间" width="115" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='试用期转正'" property="planFullmenberDay" label="拟转正时间" width="115" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--绩效-->
-				    <el-table-column v-if="table_title=='绩效表填写'" property="recruitClass" label="招聘类型" width="105" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='绩效表填写'" property="recruitClass" label="招聘类型" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--续签-->
 				    <el-table-column v-if="table_title=='合同续签'" property="contractDay" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    
 				    <el-table-column property="mailName" label="邮件主题" show-overflow-tooltip></el-table-column>
-				    <el-table-column property="recipient" label="收件人" width="80" show-overflow-tooltip></el-table-column>
+				    <el-table-column property="recipient" label="收件人" width="80"  show-overflow-tooltip></el-table-column>
 				    <el-table-column property="copyPeople" label="抄送人" width="80" show-overflow-tooltip></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='试用期转正'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
+				    <el-table-column v-if="table_title=='试用期转正'" property="approveStatus" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
 				    
-				    <el-table-column property="sendTime" label="发送时间" width="145" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="sendTime" label="发送时间" show-overflow-tooltip sortable></el-table-column>
 				    <el-table-column fixed="right" property="opera" label="操作" width="80">
 				    	<template slot-scope="scope" >
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
@@ -158,6 +158,9 @@
 	        special:null,
 	        principal:"",//接口人
 	        title:['试用期转正','合同续签','绩效表填写','新员工入职提醒','年限贺卡提醒','工作年限贺卡'],
+	      	startTime:'',
+	      	endTime:'',
+	      	approve:''
 	      }
 	    },
 	    methods: {
@@ -183,6 +186,7 @@
 		    //返回
 		    $_onBack: function(resultUserInfo) {
 		      	this.detailShow = false;
+		      	this.$_getData();
 		    },
 		    //获取数据
 		    $_getData() {
@@ -197,18 +201,32 @@
 					recruitClass:this.filters.recruit
 				};		
 				
-				if(this.filters.date!=''){
-					var startTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
-					var endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
-					para.entryDayStart = startTime;
-					para.entryDayEnd = endTime;
-				}else if(this.filters.date!=''&&this.table_title=="绩效表填写"){
-					para.contractDayStart = startTime;
-					para.contractDayEnd = endTime;
-				}else if(this.filters.date!=''&&this.table_title=="转正提醒"){
-					para.planFullmenberDayStart = startTime;
-					para.planFullmenberDayEnd = endTime;
+				if(this.filters.date!=null&&this.filters.date!=''){
+					this.startTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+					this.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+					if(this.table_title=="合同续签"){
+						para.contractDayStart =this.startTime
+						para.contractDayEnd =this.endTime;
+					}else if(this.table_title=="试用期转正"){
+						para.planFullmenberDayStart = this.startTime;
+						para.planFullmenberDayEnd = this.endTime;
+					}else{
+						para.entryDayStart = this.startTime;
+						para.entryDayEnd = this.endTime;
+					}	
+				}else{
+					if(this.table_title=="合同续签"){
+						para.contractDayStart ='';
+						para.contractDayEnd ='';
+					}else if(this.table_title=="试用期转正"){
+						para.planFullmenberDayStart = '';
+						para.planFullmenberDayEnd = '';
+					}else{
+						para.entryDayStart = '';
+						para.entryDayEnd = '';
+					}	
 				}
+				
 				this.listLoading = true;
 				getMailPage(para).then((res) => {
 					this.total = res.resultEntity.total;
@@ -216,6 +234,16 @@
 					if(res.resultEntity && res.resultEntity.list.length>0){
 						this.principal = res.resultEntity.list[0].principal;
 					}
+//					this.tableData.forEach(function(i){
+//						if(i.approveStatus == 0){
+//							this.approve = '审核中'
+//						}else if(this.tableData.approveStatus == 1){
+//							this.approve = '通过';
+//						}else if(this.tableData.approveStatus == 2){
+//							this.approve = '未通过';
+//						}
+//					})
+//					
 					console.log(res.resultEntity.list)
 					this.listLoading = false;
 				});
@@ -301,12 +329,13 @@
 	   			this.detailShow = false;
 	   		},
 	   		table_title(){
+	   			this.filters.name=''
+		      	this.filters.depart=''
+		      	this.filters.date=''
+		      	this.filters.recruit=''
 	   			this.$_initialize();
 	   		}
 	  	},
-//	  	updated(){
-//	  		console.log(this.filters.date);
-//	  	},
 	  	components: {
 	    	emailDetail
 	  	}

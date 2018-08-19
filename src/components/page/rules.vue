@@ -1,0 +1,164 @@
+<template>
+	<section>
+		<div v-if="!editVisible">
+		<div class="head clearfix editHead">
+			<span>业务管理<i class="el-icon-arrow-right"></i>规则管理</span>
+			<el-button type="primary" size="small" plain >返回</el-button>
+			<el-button type="primary" size="small" plain @click="$_addBus()">新增业务</el-button>
+		</div>
+		
+		<div class="content">
+			<el-table
+			    ref="singleTable"
+			    :data="tableData"
+			    highlight-current-row
+			    :v-loading="listLoading"
+			    stripe
+			    border
+			    size="mini"
+			    tooltip-effect="dark"
+			    @current-change="handleCurrentChange"
+			    style="width: 100%;">
+			    <!--<el-table-column type="expand">
+			      <template slot-scope="props">
+			        <el-form label-position="left" inline class="demo-table-expand">
+			          <el-form-item label="备注">
+			            <span>1</span>
+			          </el-form-item>
+			        </el-form>
+			      </template>
+			    </el-table-column>-->
+			    <el-table-column property="ruleName" label="规则名称"  show-overflow-tooltip></el-table-column>
+			    <el-table-column property="operationName" label="业务类型" width="150" show-overflow-tooltip></el-table-column>
+			    <!--<el-table-column property="ruleSummary" label="业务规则" ></el-table-column>-->			    
+			   	<el-table-column property="principal" label="接口人" width="100" sortable></el-table-column>
+			    <el-table-column property="updateTime" label="创建时间" width="160" sortable></el-table-column>
+			    <el-table-column property="updateTime" label="更新时间" width="160" sortable></el-table-column>
+			    <el-table-column property="c" label="启用" width="140">
+			    	<template slot-scope="scope" >
+				    	<el-switch
+							v-model="tableData.d"
+							active-value="100"
+	    					inactive-value="0">
+						</el-switch>
+					</template>
+			    </el-table-column>
+			    <!--<el-table-column
+                label="权限" width="260px">
+                  <template slot-scope="scope">
+                    <el-radio-group class="radio" v-model="scope.row.authContent" @change="$_onAuthContentChange(scope.row)">
+                      <el-radio :label="'ReadWrite'">完全</el-radio>
+                      <el-radio :label="'CanUse'">编辑</el-radio>
+                      <el-radio :label="'ReadOnly'">只读</el-radio>
+                    </el-radio-group>
+                  </template>
+              </el-table-column>-->
+			    <el-table-column property="operation" label="操作" width="120">
+			    	<template slot-scope="scope" >
+			    		<i class="el-icon-edit-outline" title="编辑" @click="$_checkBus(scope.row)"></i>
+			    		<i class="el-icon-delete" title="删除" @click="$_del(scope.$index, scope.row)"></i>
+					</template>
+			    </el-table-column>
+			</el-table>
+		</div>
+		</div>
+		
+		<transition name='fade' mode="out-in">
+			<div class="child-view" v-if="editVisible">
+	      		<business-edit :business-item.sync="selectedBus" @on-back="$_onBack"></business-edit>
+	    	</div>
+	    </transition>
+		
+	</section>
+</template>
+
+<script>
+	import businessEdit from "@/components/page/businessEdit";
+	import { getRuleList, removeRule } from '../../api/api';
+	
+	export default{
+		data() {
+			return {
+				filters:{
+		      		name:''
+		      	},
+				listLoading:false,
+				editVisible:false,
+				selectedBus:null,
+				currentRow:null,
+		        tableData: []
+			}
+		},
+		 methods: {
+	    	handleCurrentChange(val) {
+		        this.currentRow = val;
+		    },
+		    //获取数据
+//		    $_getRule() {
+//		    	this.listLoading = true;
+//				getRuleList().then((res) => {
+//					this.tableData = res.data.resultEntity;
+//					this.listLoading = false;
+//				});
+//			},
+//		    //删除
+//	    	$_del:function(index,row){
+//	    		this.$confirm('删除后将不能恢复，确认删除规则吗?', '提示', {
+//					type: 'warning'
+//				}).then(() => {
+//					this.listLoading = true;
+//					let para = { ruleId: row.id };
+//					removeRule(para).then((res) => {
+//						this.listLoading = false;
+//						this.$message({
+//							message: '删除成功',
+//							type: 'success'
+//						});
+//						this.$_getRule();
+//					});
+//					
+//				}).catch(() => {
+//					
+//				});
+//	    	},
+	    	$_onBack: function(resultUserInfo) {
+		      	this.editVisible = false;
+		    },
+	    	$_checkBus(item){
+				this.editVisible = true;
+				this.selectedBus = item;
+		    },
+		    $_addBus(){
+		    	this.editVisible = true;
+				this.selectedBus = {};
+		    }
+		},
+		watch:{
+//	   		'$route' (to, from){
+//	   			this.editVisible = false;
+//	   		}
+	  	},
+	  	mounted(){
+	   		this.$_getRule();
+		},
+		components: {
+		    businessEdit
+		}
+	}
+	
+</script>
+
+<style lang="scss" scoped="scoped">
+	
+	@import "src/assets/scss/_common.scss";
+	
+	.editHead.head .el-input--small{
+		right: 100px;
+	}
+	.content{
+		bottom: 22px;
+	}
+	
+</style>
+
+

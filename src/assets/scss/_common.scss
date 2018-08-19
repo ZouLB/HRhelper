@@ -47,13 +47,15 @@ section {
         padding-left: 30px;
     }
     .el-date-editor--daterange.el-input__inner{
-        width: 250px;
+        width: 232px;
     }
     .el-select{
         float: right;
         margin-right: 9px;
         width: 110px;
     }
+    
+    
 }
 .content {
     position: absolute;
@@ -68,7 +70,8 @@ section {
         cursor: pointer;
     }
     .el-icon-edit-outline,
-    .el-icon-hr-mail{
+    .el-icon-hr-mail,
+    .el-icon-setting{
         margin-right: 10px;
         &:hover{
             color: $maincolor;
