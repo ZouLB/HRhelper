@@ -223,3 +223,8 @@ input:-webkit-autofill {
 .head .el-range__close-icon{
         width: 10px !important;
     }
+
+.el-dialog .el-select .el-input__inner{
+    width:280px;
+    height:40px;
+}

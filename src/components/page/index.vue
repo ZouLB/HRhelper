@@ -34,7 +34,7 @@
 					</el-menu-item>
 				</el-submenu>
 				
-				<el-menu-item index="/index/management">
+				<el-menu-item index="/index/business">
 					<i class="el-icon-hr-business2"></i>
 					<span slot="title">业务管理</span>
 				</el-menu-item>

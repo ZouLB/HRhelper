@@ -19,13 +19,21 @@
 					      <el-option v-for="(item,i) in hrForm" :key="i" :label="item" :value="item">
 							</el-option>
 					    </el-select>
-					</el-form-item>-->
+					</el-form-item>
 					<el-form-item label="业务类型" prop="operationId">
 						<el-select v-model="tableDetail.operationId" placeholder="请选择业务类型">
 					      <el-option v-for="(item,i) in sortForm" :key="i" :label="item.operationName" :value="item.id">
-					      	<!--{{item.operationName}}-->
+					      	<!--{{item.operationName}}
 							</el-option>
 					    </el-select>
+					</el-form-item>-->
+					
+					<el-form-item label="启用">
+					    <el-switch 
+					    	v-model="tableDetail.isUse"
+					    	:active-value="1"
+	    					:inactive-value="0"
+					    ></el-switch>
 					</el-form-item>
 					
 					<el-form-item label="参照时间">
@@ -58,14 +66,14 @@
 						  v-model="value3"
 						  class="sentTime"
 						  :picker-options="{
-						    start: '08:30',
+						    start: '08:00',
 						    step: '00:15',
-						    end: '19:00'
+						    end: '20:00'
 						  }"
 						  placeholder="请选择时间">
 						</el-time-select>
 					    <!--<el-button type="text" v-if="index==0" size="small" @click="addDomain">新增</el-button>-->
-					    <el-button type="text" v-if="index>0" size="small" @click.prevent="removeDomain(domain)" class="delBtn">删除</el-button>
+					    <!--<el-button type="text" v-if="index>0" size="small" @click.prevent="removeDomain(domain)" class="delBtn">删除</el-button>-->
 		
 					</el-form-item>
 					
@@ -90,33 +98,33 @@
 </template>
 
 <script>
-	import util from '../../assets/js/util.js';
+//	import util from '../../assets/js/util.js';
 	import { quillEditor } from 'vue-quill-editor';
-	import { getMenuList, getRuleDetail } from '../../api/api';
+	import { getMenuList, getRuleDetail, editRule } from '../../api/api';
 	
   	export default {
 	    data() {
 	     	return {
 	      		rules: {
 //		        	ruleName: [{ required: true, message: '请输入规则名称', trigger: 'change' }],
-		        	operationId: [{ required: true, message: '请选择业务类型', trigger: 'change' }],
+//		        	operationId: [{ required: true, message: '请选择业务类型', trigger: 'change' }],
 //		        	rule: [{ required: true, message: '请输入业务规则', trigger: 'change' }],
 		        },
 		        saveLoading:false,
-		        sortForm:[],
+//		        sortForm:[],
 		        tableDetail:[],
-		        year:0,
-		        month:0,
-		        day:"1",
-		        hours:18,
-		        minutes:15,
+//		        year:0,
+//		        month:0,
+//		        day:"1",
+//		        hours:18,
+//		        minutes:15,
 		        value3: null,
-		        dynamicValidateForm: {
-			        domains: [{
-			            value: ''
-			        }],
-			        email: ''
-			    },
+//		        dynamicValidateForm: {
+//			        domains: [{
+//			            value: ''
+//			        }],
+//			        email: ''
+//			    },
 			    value:"入职后",
 			    editableTabsValue: '1',
 			    mailContent: `<h2 class="ql-align-center"><span class="ql-font-serif">邮件内容加载中..</span></h2>`,
@@ -162,17 +170,27 @@
 		    $_onSave: function() {
 //		      	this.$refs.businessItem.validate((valid) => {
 //		          	if (valid) {
-//		          		this.saveLoading = true;
-//						let para = Object.assign({}, this.businessItem);
+		          		this.saveLoading = true;
+						let para = Object.assign({}, this.tableDetail);
+						let arr = this.value3.split(':');
+			  			para.sendingHourofday = arr[0];
+			  			para.sendingMinofhour = arr[1];
+//			  			if(Number(arr[1])==0){
+//			  				para.sendingMinofhour=00;
+//			  			}else{
+//			  				para.sendingMinofhour = Number(arr[1]);
+//			  			}
+//			  			console.log(this.value3)
+						console.log(para.sendingMinofhour);
 //						para.createTime =util.formatDate.format(new Date(), 'yyyy-MM-dd');//更新时间
-//						addKnowledge(para).then((res) => {
-//							this.saveLoading = false;
-//							this.$message({
-//								message: '保存成功',
-//								type: 'success'
-//							});
-//							this.$_onBack();
-//						});
+						editRule(para).then((res) => {
+							this.saveLoading = false;
+							this.$message({
+								message: '保存成功',
+								type: 'success'
+							});
+							this.$_onBack();
+						});
 //			      	} 
 //		        });
 		    },
@@ -198,27 +216,27 @@
 				this.pageSize = val
 		    },
 	    	
-	    	//删除规则
-	    	removeDomain(item) {
-		        var index = this.dynamicValidateForm.domains.indexOf(item)
-		        if (index !== -1) {
-		          this.dynamicValidateForm.domains.splice(index, 1)
-		        }
-		    },
-		    //新增规则
-		    addDomain() {
-		        this.dynamicValidateForm.domains.push({
-		          value: '',
-		          key: Date.now()
-		        });
-		    }
+//	    	//删除规则
+//	    	removeDomain(item) {
+//		        var index = this.dynamicValidateForm.domains.indexOf(item)
+//		        if (index !== -1) {
+//		          this.dynamicValidateForm.domains.splice(index, 1)
+//		        }
+//		    },
+//		    //新增规则
+//		    addDomain() {
+//		        this.dynamicValidateForm.domains.push({
+//		          value: '',
+//		          key: Date.now()
+//		        });
+//		    }
 	  	},
 	  	watch:{
-	  		value3(){
-	  			let arr = this.value3.split(':');
-	  			this.hours = arr[0];
-	  			this.minutes = arr[1];
-	  		}
+//	  		value3(){
+//	  			let arr = this.value3.split(':');
+//	  			this.hours = arr[0];
+//	  			this.minutes = arr[1];
+//	  		}
 	  	},
 	  	computed: {
 	      	editor() {
@@ -226,32 +244,22 @@
 	      	},
 	    },
 	    mounted() {
-	    	getMenuList().then((res) => {
-				this.sortForm = res.data.resultEntity;
-			});
+//	    	getMenuList().then((res) => {
+//				this.sortForm = res.data.resultEntity;
+//			});
 			getRuleDetail({ruleId:this.businessItem.id}).then((res) => {
 				this.tableDetail = res.data.resultEntity;
+				console.log(this.tableDetail);
+				if(this.tableDetail.sendingMinofhour == 0){
+					this.tableDetail.sendingMinofhour="00"
+				}
 	    		this.value3 = this.tableDetail.sendingHourofday +':'+ this.tableDetail.sendingMinofhour;
-//	      		setTimeout(() => {
+	      		console.log(this.value3);
+//				setTimeout(() => {
 //		        	this.mailContent = this.tableDetail.modelContent;
 //		      	}, 300);
-	      		console.log(this.tableDetail);
+//	      		console.log(this.tableDetail);
 			});
-
-//	      	setTimeout(() => {
-//	        	this.mailContent = `<div style="margin-left:40px;"><h3 class="ql-align-justify"><br></h3>
-//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">&emsp;&emsp;&emsp;Hi，</span></h3>
-//		        			<h3 class="ql-align-justify">	<span style="color: rgb(112, 48, 160);">今天是加入品高的第一天，过得还惬意么?感受到品高的活力了么？真诚地祝您在公司一切愉快！</span></h3>
-//		        			<h3 class="ql-align-justify">	<span style="color: rgb(112, 48, 160);">有什么需要帮忙的么？试试下面的方法？</span></h3>
-//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">1）想了解部门对自己工作绩效的期望？需要开通公司系统某个模块的权限？想了解业务的接口人？</span></h3>
-//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">答：直属部门经理可以帮到你！“LINK-工作指南“可以帮到你！</span></h3>
-//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">2） 想了解近段时间的工作安排？想尽快了解负责的业务、项目情况？</span></h3>
-//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">答：快去找你的导师帮忙吧！</span></h3><h3 class="ql-align-justify">
-//		        			<span style="color: rgb(112, 48, 160);">3）入职提交的材料还有遗漏？社保公积金有疑惑？入职时介绍的办事流程还有疑惑？</span></h3>
-//		        			<h3 class="ql-align-justify"><span style="color: rgb(112, 48, 160);">答：欢迎咨询温柔可爱的HR小姐姐：）</span></h3><h3 class="ql-align-justify">	
-//		        			<span style="color: rgb(112, 48, 160);">HR小姐姐祝您工作顺利！生活愉快！幸福感爆棚！开启Bingo旅程！</span></h3>
-//		        			<p class="ql-align-justify"><br></p><p class="ql-align-justify"><br></p><p class="ql-align-right"><br></p><p class="ql-align-right">❤人力资源部❤</p><h3><br></h3></div>`
-//	      	}, 300);
 	    },
 	    components: {
 		    quillEditor

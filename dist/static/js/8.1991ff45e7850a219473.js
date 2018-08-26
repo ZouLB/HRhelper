@@ -1,0 +1,1 @@
+webpackJsonp([8],{cI3i:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var i={render:function(){var e=this.$createElement,t=this._self._c||e;return t("transition",{attrs:{name:"fade",mode:"out-in"}},[t("router-view",{staticClass:"child-view right-main"})],1)},staticRenderFns:[]},r=n("vSla")(null,i,!1,null,null,null);t.default=r.exports}});

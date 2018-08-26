@@ -36,7 +36,7 @@
 			    <el-table-column property="operation" label="操作" width="120">
 			    	<template slot-scope="scope" >
 			    		<i class="el-icon-edit-outline" title="编辑" @click="$_editBus(scope.row)"></i>
-			    		<router-link to="rules"><i class="el-icon-setting" title="规则管理" @click="$_checkBus(scope.row)"></i></router-link>
+			    		<router-link :to="'rules/'+scope.row.id"><i class="el-icon-setting" title="规则管理"></i></router-link>
 			    		<i class="el-icon-delete" title="删除" @click="$_del(scope.$index, scope.row)"></i>
 					</template>
 			    </el-table-column>
@@ -68,14 +68,14 @@
 				<el-form-item label="业务名称" prop="operationName">
 					<el-input v-model="editForm.operationName" auto-complete="off" placeholder="请输入业务名称"></el-input>
 				</el-form-item>
-				<el-form-item label="接口人" prop="principal">
-					<el-select v-model="editForm.principal" placeholder="请选择接口人">
+				<el-form-item label="接口人" prop="userId">
+					<el-select v-model="editForm.userId" placeholder="请选择接口人">
 					    <el-option v-for="(item,i) in hrForm" :key="i" :label="item.username" :value="item.id">
 						</el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item style="margin-bottom: 0;"> 
-					<el-button type="primary" :loading="addLoading" @click="$_editSubmit">确定</el-button>
+					<el-button type="primary" :loading="editLoading" @click="$_editSubmit">确定</el-button>
 					<el-button @click.native="addFormVisible = false">取消</el-button>
 				</el-form-item>
 			</el-form>
@@ -97,6 +97,7 @@
 //		      	},
 				listLoading:false,
 				addLoading:false,
+				editLoading:false,
 //				selectedBus:null,
 				currentRow:null,
 		        tableData: [],
@@ -115,7 +116,7 @@
 		       },
 		       editFormRules: {
 		        	operationName: [{ required: true, message: '请输入业务名称', trigger: 'change' }],
-		        	principal: [{ required: true, message: '请选择接口人', trigger: 'blur' }]
+		        	userId: [{ required: true, message: '请选择接口人', trigger: 'blur' }]
 		       	}
 			}
 		},
@@ -127,7 +128,6 @@
 		    $_getBus() {
 		    	this.listLoading = true;
 				getBusList().then((res) => {
-					console.log(res.data.resultEntity);
 					this.tableData = res.data.resultEntity;
 					this.listLoading = false;
 				});
@@ -172,14 +172,19 @@
 				})
 			},
 			$_editSubmit() {
-		    	editBus(this.addForm).then((res) => {
+				let para = {
+					id:this.editForm.id,
+					operationName:this.editForm.operationName,
+					userId:this.editForm.userId
+				}
+		    	editBus(para).then((res) => {
 			    	this.addLoading=true;
 					this.$message({
 						message: '编辑成功',
 						type: 'success'
 					});
-					this.addLoading=false;
-					this.addFormVisible = false;
+					this.editLoading=false;
+					this.editFormVisible = false;
 					this.$_getBus();
 				})
 		    },
@@ -192,7 +197,6 @@
 		    	this.editFormVisible = true;
 //		    	this.type="edit";
 		    	this.editForm = item;
-		    	console.log(this.editForm);
 		    }
 		},
 		watch:{

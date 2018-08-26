@@ -16,6 +16,12 @@ section {
     span {
         font: 16px/32px "微软雅黑";
         color: #666;
+        a{
+            color: #666;
+            &:hover{
+                text-decoration: underline;
+            }
+        }
     }
     .el-input--small {
         float: right;

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 //http://10.200.202.36:8080/operation/getOperationMenu
 //let base = process.env.API_URL;
-let base = "http://ccw.free.ngrok.cc";
+let base = "http://ccw.free.idcfengye.com";
 
 //获取菜单
 export const getMenuList = params => { return axios.get(`${base}/operation/getOperationMenu`, { params: params }); };
@@ -22,18 +22,6 @@ export const cancelSendMail = params => { return axios.get(`${base}/mail/cancel`
 //批量取消发送邮件
 export const batchCancelSendMail = params => { return axios.get(`${base}/mail/patch_cancel`, { params: params }); };
 
-//获取规则
-export const getRuleList = params => { return axios.get(`${base}/rule/list`, { params: params }); };
-
-//删除规则
-export const removeRule = params => { return axios.delete(`${base}/rule/del`, { params: params }); };
-
-//获取规则详情
-export const getRuleDetail = params => { return axios.get(`${base}/rule/get`, { params: params }); };
-
-//添加规则
-export const addRule = params => { return axios.post(`${base}/rule`, params).then(res => res.data); };
-
 
 //获取业务
 export const getBusList = params => { return axios.get(`${base}/operation/list`, { params: params }); };
@@ -50,6 +38,21 @@ export const editBus = params => { return axios.patch(`${base}/operation/update`
 //删除业务
 export const removeBus = params => { return axios.delete(`${base}/operation/del`, { params: params }); };
 
+
+//获取规则
+export const getRuleList = params => { return axios.get(`${base}/rule/list`, { params: params }); };
+
+//删除规则
+export const removeRule = params => { return axios.delete(`${base}/rule/del`, { params: params }); };
+
+//获取规则详情
+export const getRuleDetail = params => { return axios.get(`${base}/rule/get`, { params: params }); };
+
+//添加规则
+export const addRule = params => { return axios.post(`${base}/rule`, params).then(res => res.data); };
+
+//编辑规则
+export const editRule = params => { return axios.patch(`${base}/rule`, params).then(res => res.data); };
 
 
 //export const getMailPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
