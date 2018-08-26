@@ -1,9 +1,16 @@
 <template>
 	<section id="busEdit">
 		<div class="head clearfix">
-			<span>规则编辑</span>
+			<span>
+				<router-link to="/index/business">业务管理</router-link>
+				<i class="el-icon-arrow-right"></i>
+				<a @click="$_onBack">规则管理</a>
+				<i class="el-icon-arrow-right"></i>
+				{{businessItem?'新增规则':'编辑规则'}}
+			</span>
 			<el-button type="primary" size="small" plain @click="$_onBack">返回</el-button>
-			<el-button type="primary" size="small" @click="$_onSave" :loading="saveLoading">保存</el-button>
+			<el-button v-if="businessItem" type="primary" size="small" @click="$_onAdd" :loading="saveLoading">新增</el-button>
+			<el-button v-else type="primary" size="small" @click="$_onSave" :loading="saveLoading">保存</el-button>
 			<!--<el-button v-if="editableTabsValue=='1'" type="primary" size="small" plain @click="addDomain">新增发送时间</el-button>-->
 		</div>
 		
@@ -100,7 +107,7 @@
 <script>
 //	import util from '../../assets/js/util.js';
 	import { quillEditor } from 'vue-quill-editor';
-	import { getMenuList, getRuleDetail, editRule } from '../../api/api';
+	import { getMenuList, getRuleDetail, editRule, addRule } from '../../api/api';
 	
   	export default {
 	    data() {
@@ -127,7 +134,7 @@
 //			    },
 			    value:"入职后",
 			    editableTabsValue: '1',
-			    mailContent: `<h2 class="ql-align-center"><span class="ql-font-serif">邮件内容加载中..</span></h2>`,
+//			    mailContent: `<h2 class="ql-align-center"><span class="ql-font-serif">邮件内容加载中..</span></h2>`,
 		        editorOption: {
 		          	modules: {
 		            	toolbar: [
@@ -147,6 +154,10 @@
 	    },
 	    props: {
 		    businessItem: {
+		      type: Object,
+		      default: null
+		    },
+		    ruleId: {
 		      type: Object,
 		      default: null
 		    }
@@ -175,14 +186,6 @@
 						let arr = this.value3.split(':');
 			  			para.sendingHourofday = arr[0];
 			  			para.sendingMinofhour = arr[1];
-//			  			if(Number(arr[1])==0){
-//			  				para.sendingMinofhour=00;
-//			  			}else{
-//			  				para.sendingMinofhour = Number(arr[1]);
-//			  			}
-//			  			console.log(this.value3)
-						console.log(para.sendingMinofhour);
-//						para.createTime =util.formatDate.format(new Date(), 'yyyy-MM-dd');//更新时间
 						editRule(para).then((res) => {
 							this.saveLoading = false;
 							this.$message({
@@ -193,6 +196,23 @@
 						});
 //			      	} 
 //		        });
+		    },
+		    $_onAdd:function(){
+		    	this.saveLoading = true;
+				let para = Object.assign({}, this.tableDetail);
+				if(this.value3){
+					let arr = this.value3.split(':');
+		  			para.sendingHourofday = arr[0];
+		  			para.sendingMinofhour = arr[1];
+				}
+				addRule(para).then((res) => {
+					this.saveLoading = false;
+					this.$message({
+						message: '新增成功',
+						type: 'success'
+					});
+					this.$_onBack();
+				});
 		    },
 		    
 	    	//删除业务
@@ -244,22 +264,25 @@
 	      	},
 	    },
 	    mounted() {
-//	    	getMenuList().then((res) => {
-//				this.sortForm = res.data.resultEntity;
-//			});
-			getRuleDetail({ruleId:this.businessItem.id}).then((res) => {
-				this.tableDetail = res.data.resultEntity;
-				console.log(this.tableDetail);
-				if(this.tableDetail.sendingMinofhour == 0){
-					this.tableDetail.sendingMinofhour="00"
-				}
-	    		this.value3 = this.tableDetail.sendingHourofday +':'+ this.tableDetail.sendingMinofhour;
-	      		console.log(this.value3);
-//				setTimeout(() => {
-//		        	this.mailContent = this.tableDetail.modelContent;
-//		      	}, 300);
-//	      		console.log(this.tableDetail);
-			});
+//	    	console.log(this.businessItem)
+			if(this.businessItem){
+				this.tableDetail = this.businessItem;
+			}else{
+				getRuleDetail({ruleId:this.ruleId}).then((res) => {
+					this.tableDetail = res.data.resultEntity;
+//					console.log(this.tableDetail);
+					if(this.tableDetail.sendingMinofhour == 0){
+						this.tableDetail.sendingMinofhour="00"
+					}
+		    		this.value3 = this.tableDetail.sendingHourofday +':'+ this.tableDetail.sendingMinofhour;
+	//				setTimeout(() => {
+	//		        	this.mailContent = this.tableDetail.modelContent;
+	//		      	}, 300);
+	//	      		console.log(this.tableDetail);
+				});
+			}
+			
+			
 	    },
 	    components: {
 		    quillEditor

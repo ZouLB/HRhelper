@@ -40,7 +40,7 @@
 							v-model="scope.row.isUse"
 							:active-value="1"
 	    					:inactive-value="0"
-	    					@change="$_del">
+	    					@change="$_change(scope.row.id)">
 						</el-switch>
 					</template>
 			    </el-table-column>
@@ -66,7 +66,7 @@
 		
 		<transition name='fade' mode="out-in">
 			<div class="child-view" v-if="editVisible">
-	      		<business-edit :business-item.sync="selectedBus" @on-back="$_onBack"></business-edit>
+	      		<business-edit :business-item.sync="selectedBus" :rule-id.sync="selectedRid" @on-back="$_onBack"></business-edit>
 	    	</div>
 	    </transition>
 		
@@ -75,7 +75,7 @@
 
 <script>
 	import businessEdit from "@/components/page/businessEdit";
-	import { getRuleList, removeRule } from '../../api/api';
+	import { getRuleList, removeRule, changeStatus } from '../../api/api';
 	
 	export default{
 		data() {
@@ -86,9 +86,9 @@
 				listLoading:false,
 				editVisible:false,
 				selectedBus:null,
+				selectedRid:null,
 				currentRow:null,
 		        tableData: [],
-		        isUse:1
 			}
 		},
 		 methods: {
@@ -100,7 +100,7 @@
 		    	this.listLoading = true;
 				getRuleList({operationId:this.$route.params.oid}).then((res) => {
 					this.tableData = res.data.resultEntity;
-//					console.log(this.tableData)
+					console.log(this.tableData)
 					this.listLoading = false;
 				});
 			},
@@ -124,17 +124,42 @@
 					
 				});
 	    	},
+	    	$_change:function(id){
+				this.listLoading = true;
+				let para = { ruleId: id };
+				changeStatus(para).then((res) => {
+					this.listLoading = false;
+					this.$message({
+						message: '修改成功',
+						type: 'success'
+					});
+					this.$_getRule();
+				});
+	    	},
 	    	$_onBack: function(resultUserInfo) {
 		      	this.editVisible = false;
 		      	this.$_getRule();
 		    },
 	    	$_checkBus(item){
 				this.editVisible = true;
-				this.selectedBus = item;
+				this.selectedRid = item.id;
+				this.selectedBus = null;
 		    },
 		    $_addBus(){
 		    	this.editVisible = true;
-				this.selectedBus = {};
+				this.selectedBus = {
+					attachmentHref:null,
+					distanceD:0,
+					distanceM:0,
+					distanceY:0,
+					isUse:0,
+					modelContent:"",
+					operationId:this.$route.params.oid,
+					ruleMethod:"",
+					ruleName:"",
+					sendingHourofday:null,
+					sendingMinofhour:null
+				};
 		    }
 		},
 		watch:{

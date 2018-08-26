@@ -55,6 +55,11 @@ export const addRule = params => { return axios.post(`${base}/rule`, params).the
 export const editRule = params => { return axios.patch(`${base}/rule`, params).then(res => res.data); };
 
 
+//修改启用
+export const changeStatus = params => { return axios.get(`${base}/rule/changeStatus`, { params: params }); };
+
+
+
 //export const getMailPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
 
 //export const removeMail = params => { return axios.get(`${base}/user/remove`, { params: params }); };

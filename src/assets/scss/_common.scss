@@ -18,6 +18,7 @@ section {
         color: #666;
         a{
             color: #666;
+            cursor:pointer; 
             &:hover{
                 text-decoration: underline;
             }
