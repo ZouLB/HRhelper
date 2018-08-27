@@ -12,7 +12,7 @@
 			    ref="singleTable"
 			    :data="tableData"
 			    highlight-current-row
-			    :v-loading="listLoading"
+			    v-loading="listLoading"
 			    stripe
 			    border
 			    size="mini"
@@ -111,11 +111,11 @@
 				},
 				editForm:{},
 				addFormRules: {
-		        	operationName: [{ required: true, message: '请输入业务名称', trigger: 'change' }],
+		        	operationName: [{ required: true, message: '请输入业务名称', trigger: 'blur' }],
 		        	userId: [{ required: true, message: '请选择接口人', trigger: 'blur' }]
 		       },
 		       editFormRules: {
-		        	operationName: [{ required: true, message: '请输入业务名称', trigger: 'change' }],
+		        	operationName: [{ required: true, message: '请输入业务名称', trigger: 'blur' }],
 		        	userId: [{ required: true, message: '请选择接口人', trigger: 'blur' }]
 		       	}
 			}

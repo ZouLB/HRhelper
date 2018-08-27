@@ -12,7 +12,7 @@
 			    ref="singleTable"
 			    :data="tableData"
 			    highlight-current-row
-			    :v-loading="listLoading"
+			    v-loading="listLoading"
 			    stripe
 			    border
 			    size="mini"

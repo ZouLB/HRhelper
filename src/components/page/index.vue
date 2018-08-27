@@ -42,7 +42,7 @@
 					<i class="el-icon-hr-mail1"></i>
 					<span slot="title">业务管理</span>
 				</el-menu-item>-->
-				<el-menu-item index="">
+				<el-menu-item index="/index/help">
 					<i class="el-icon-news"></i>
 					<span slot="title">帮助</span>
 				</el-menu-item>

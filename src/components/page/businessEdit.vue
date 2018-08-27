@@ -17,7 +17,7 @@
 		<div class="content">
 			<el-tabs v-model="editableTabsValue" type="card">
 				<el-tab-pane label="基本信息" name="1">
-			  	<el-form v-model="tableDetail" label-width="90px" ref="tableDetail" :rules="rules">
+			  	<el-form :model="tableDetail" label-width="90px" ref="tableDetail" :rules="rules">
 					<el-form-item label="规则名称" prop="ruleName">
 						<el-input v-model="tableDetail.ruleName" auto-complete="off" placeholder="请输入规则名称"></el-input>
 					</el-form-item>
@@ -43,7 +43,7 @@
 					    ></el-switch>
 					</el-form-item>
 					
-					<el-form-item label="参照时间">
+					<el-form-item label="参照时间" prop="ruleMethod">
 						<el-radio-group v-model="tableDetail.ruleMethod">
 					      	<el-radio :label="'1'" >入职后</el-radio>
 					      	<el-radio :label="'2'">合同结束前</el-radio>
@@ -64,7 +64,7 @@
 						      :value="item.value">
 						    </el-option>
 						</el-select>-->
-					<el-form-item label="发送时间">
+					<el-form-item label="发送时间" required>
 						<el-input-number v-model="tableDetail.distanceY" size="small" controls-position="right" :min="0" :max="10"></el-input-number>&nbsp;年&nbsp;
 						<el-input-number v-model="tableDetail.distanceM" size="small" controls-position="right" :min="0" :max="11"></el-input-number>&nbsp;月&nbsp;
 						<el-input-number v-model="tableDetail.distanceD" size="small" controls-position="right" :min="0" :max="31"></el-input-number>&nbsp;日&nbsp;&nbsp;
@@ -113,9 +113,9 @@
 	    data() {
 	     	return {
 	      		rules: {
-//		        	ruleName: [{ required: true, message: '请输入规则名称', trigger: 'change' }],
-//		        	operationId: [{ required: true, message: '请选择业务类型', trigger: 'change' }],
-//		        	rule: [{ required: true, message: '请输入业务规则', trigger: 'change' }],
+		        	ruleName: [{ required: true, message: '请输入规则名称', trigger: 'blur' }],
+		        	ruleMethod: [{ required: true, message: '请选择参照时间', trigger: 'blur' }],
+//		        	value3: [{ required: true, message: '请选择发送时间', trigger: 'blur' }],
 		        },
 		        saveLoading:false,
 //		        sortForm:[],
@@ -179,8 +179,8 @@
 		    },
 		    //保存
 		    $_onSave: function() {
-//		      	this.$refs.businessItem.validate((valid) => {
-//		          	if (valid) {
+		      	this.$refs.tableDetail.validate((valid) => {
+		          	if (valid) {
 		          		this.saveLoading = true;
 						let para = Object.assign({}, this.tableDetail);
 						let arr = this.value3.split(':');
@@ -194,25 +194,32 @@
 							});
 							this.$_onBack();
 						});
-//			      	} 
-//		        });
+			      	} 
+		        });
 		    },
 		    $_onAdd:function(){
-		    	this.saveLoading = true;
-				let para = Object.assign({}, this.tableDetail);
-				if(this.value3){
-					let arr = this.value3.split(':');
-		  			para.sendingHourofday = arr[0];
-		  			para.sendingMinofhour = arr[1];
-				}
-				addRule(para).then((res) => {
-					this.saveLoading = false;
-					this.$message({
-						message: '新增成功',
-						type: 'success'
-					});
-					this.$_onBack();
-				});
+		    	this.$refs.tableDetail.validate((valid) => {
+		          	if (valid) {
+		          		if(this.value3){
+		          			this.saveLoading = true;
+							let para = Object.assign({}, this.tableDetail);
+							let arr = this.value3.split(':');
+				  			para.sendingHourofday = arr[0];
+				  			para.sendingMinofhour = arr[1];
+							addRule(para).then((res) => {
+								this.saveLoading = false;
+								this.$message({
+									message: '新增成功',
+									type: 'success'
+								});
+								this.$_onBack();
+							});
+						} else{
+							this.$message('请选择发送时间');
+						}
+		          	}
+				    	
+		        });
 		    },
 		    
 	    	//删除业务

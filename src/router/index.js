@@ -13,7 +13,8 @@ const waitSend = resolve => require(['@/components/page/waitSend'],resolve);
 //const management = resolve => require(['@/components/page/management'],resolve);
 const business = resolve => require(['@/components/page/business'],resolve);
 const rules = resolve => require(['@/components/page/rules'],resolve);
-const templateWrite = resolve => require(['@/components/page/templateWrite'],resolve);
+const help = resolve => require(['@/components/page/help'],resolve);
+//const templateWrite = resolve => require(['@/components/page/templateWrite'],resolve);
 
 Vue.use(Router)
 
@@ -30,6 +31,7 @@ export default new Router({
 					{path:'waitSend/:id/:isSpecial',name:waitSend,component:waitSend},
 					{path:'business',component:business},
 					{path:'rules/:oid',component:rules},
+					{path:'help',component:help},
 //					{
 //						path:'management',
 //						component:management,
@@ -39,7 +41,7 @@ export default new Router({
 //							{path:'rules',component:rules},
 //						]
 //					},
-					{path:'templateWrite',component:templateWrite},
+//					{path:'templateWrite',component:templateWrite},
 				]
 		}
   ]
