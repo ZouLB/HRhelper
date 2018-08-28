@@ -105,7 +105,7 @@
 <script>
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
-	import { getMailPage, removeMail, batchRemoveMail} from '../../api/api';
+	import { getMailPage, removeMail, batchRemoveMail,getMenuList} from '../../api/api';
 	
   	export default {
 	    data() {
@@ -173,7 +173,13 @@
 		    //初始化
 		    $_initialize() {
 		    	let index = this.$route.params.id;
-		    	this.table_title = this.title[index-1];
+		    	getMenuList().then((res) => {
+					this.title = res.data.resultEntity;
+				});
+				var tmpIndex = this.title.findIndex(function(item) {
+			        return item.id == index;
+			     });
+		    	this.table_title = this.title[tmpIndex].operationName;
 		   		this.sortId = this.$route.params.id;
 		   		this.special = this.$route.params.isSpecial;
 		   		this.$_getData();
@@ -244,7 +250,7 @@
 //						}
 //					})
 //					
-					console.log(res.resultEntity.list)
+//					console.log(res.resultEntity.list)
 					this.listLoading = false;
 				});
 			},

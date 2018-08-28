@@ -18,7 +18,7 @@
 						<i class="el-icon-hr-sent-"></i>
 						<span slot="title">待发送邮件</span>
 					</template>
-					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+v.id+'/'+v.isSpecial">
+					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+v.id+'/'+v.isSpecial" @click="defaultActive = '/index/waitSend/'+v.id+'/'+v.isSpecial">
 					<!--<i class="el-submenu__icon-arrow el-icon-arrow-right"></i>-->
 					{{v.operationName}}
 					</el-menu-item>
@@ -34,7 +34,7 @@
 					</el-menu-item>
 				</el-submenu>
 				
-				<el-menu-item index="/index/business">
+				<el-menu-item index="/index/management">
 					<i class="el-icon-hr-business2"></i>
 					<span slot="title">业务管理</span>
 				</el-menu-item>
@@ -89,11 +89,20 @@
             getMenuList().then((res) => {
 				this.title = res.data.resultEntity;
 			});
-
+			
+			if(this.$route.path.indexOf("/index/management")!=-1){
+   				this.defaultActive = "/index/management";
+   			}else{
+   				this.defaultActive = this.$route.path;
+   			}
 		},
 		watch:{
 	   		'$route' (to, from){
-	   			this.defaultActive = to.path;
+	   			if(to.path.indexOf("/index/management")!=-1){
+	   				this.defaultActive = "/index/management";
+	   			}else{
+	   				this.defaultActive = to.path;
+	   			}
 	   		},
 	   		 screenWidth (val) {
                 if (!this.timer) {

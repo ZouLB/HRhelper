@@ -10,7 +10,7 @@ const login = resolve => require(['@/components/page/login'],resolve);
 const index = resolve => require(['@/components/page/index'],resolve);
 const sent = resolve => require(['@/components/page/sent'],resolve);
 const waitSend = resolve => require(['@/components/page/waitSend'],resolve);
-//const management = resolve => require(['@/components/page/management'],resolve);
+const management = resolve => require(['@/components/page/management'],resolve);
 const business = resolve => require(['@/components/page/business'],resolve);
 const rules = resolve => require(['@/components/page/rules'],resolve);
 const help = resolve => require(['@/components/page/help'],resolve);
@@ -29,18 +29,18 @@ export default new Router({
 					{path: '/index', redirect: '/index/waitSend/1/1' },
 					{path:'sent/:id/:isSpecial',name:sent,component:sent},
 					{path:'waitSend/:id/:isSpecial',name:waitSend,component:waitSend},
-					{path:'business',component:business},
-					{path:'rules/:oid',component:rules},
+//					{path:'business',component:business},
+//					{path:'rules/:oid',component:rules},
 					{path:'help',component:help},
-//					{
-//						path:'management',
-//						component:management,
-//						children:[
-//							{path:'/index/management', redirect: '/index/management/business' },
-//							{path:'business',component:business},
-//							{path:'rules',component:rules},
-//						]
-//					},
+					{
+						path:'management',
+						component:management,
+						children:[
+							{path:'/index/management', redirect: '/index/management/business' },
+							{path:'business',component:business},
+							{path:'rules/:oid',component:rules},
+						]
+					},
 //					{path:'templateWrite',component:templateWrite},
 				]
 		}
