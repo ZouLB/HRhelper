@@ -2,7 +2,7 @@
 	<section id="busEdit">
 		<div class="head clearfix">
 			<span>
-				<router-link to="/index/business">业务管理</router-link>
+				<router-link to="/index/management/business">业务管理</router-link>
 				<i class="el-icon-arrow-right"></i>
 				<a @click="$_onBack">规则管理</a>
 				<i class="el-icon-arrow-right"></i>

@@ -102,7 +102,7 @@
 <script>
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
-	import { getMailPage, cancelSendMail, batchCancelSendMail } from '../../api/api';
+	import { getMailPage, cancelSendMail, batchCancelSendMail, getMenuList } from '../../api/api';
 	
   	export default {
 	    data() {
@@ -149,7 +149,7 @@
 	        selectedEmail:null,
 	        special:null,
 	        principal:"",//接口人
-	        title:['试用期转正','合同续签','绩效表填写','新员工入职提醒','年限贺卡提醒','工作年限贺卡'],
+	        title:[],
 	      	startTime:'',
 	      	endTime:''
 	      }
@@ -172,14 +172,15 @@
 		    //初始化
 		    $_initialize() {
 		    	let index = this.$route.params.id;
+		    	let tmpIndex = 0;
 		    	getMenuList().then((res) => {
 					this.title = res.data.resultEntity;
+					tmpIndex = this.title.findIndex(function(item) {
+				        return item.id == index;
+				    });
+			    	this.table_title = this.title[tmpIndex].operationName;
 				});
-				var tmpIndex = this.title.findIndex(function(item) {
-			        return item.id == index;
-			     });
-		    	this.table_title = this.title[tmpIndex].operationName;
-		    	
+				
 		   		this.sortId = this.$route.params.id;
 		   		this.special = this.$route.params.isSpecial;
 		   		this.$_getData();
@@ -242,7 +243,6 @@
 					if(res.resultEntity && res.resultEntity.list.length>0){
 						this.principal = res.resultEntity.list[0].principal;
 					}
-					console.log(res.resultEntity.list)
 					this.listLoading = false;
 				});
 			},

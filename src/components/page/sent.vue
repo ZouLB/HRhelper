@@ -67,7 +67,7 @@
 				    <el-table-column property="copyPeople" label="抄送人" width="80" show-overflow-tooltip></el-table-column>
 				    
 				    <!--转正-->
-				    <el-table-column v-if="table_title=='试用期转正'" property="approveStatus" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
+				    <el-table-column v-if="table_title=='试用期转正'||'合同续签'" property="approveStatus" label="审核状态" width="80" show-overflow-tooltip></el-table-column>
 				    
 				    <el-table-column property="sendTime" label="发送时间" show-overflow-tooltip sortable></el-table-column>
 				    <el-table-column fixed="right" property="opera" label="操作" width="80">
@@ -173,13 +173,14 @@
 		    //初始化
 		    $_initialize() {
 		    	let index = this.$route.params.id;
+		    	let tmpIndex = 0;
 		    	getMenuList().then((res) => {
 					this.title = res.data.resultEntity;
+					tmpIndex = this.title.findIndex(function(item) {
+				        return item.id == index;
+				    });
+			    	this.table_title = this.title[tmpIndex].operationName;
 				});
-				var tmpIndex = this.title.findIndex(function(item) {
-			        return item.id == index;
-			     });
-		    	this.table_title = this.title[tmpIndex].operationName;
 		   		this.sortId = this.$route.params.id;
 		   		this.special = this.$route.params.isSpecial;
 		   		this.$_getData();

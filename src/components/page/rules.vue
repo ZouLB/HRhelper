@@ -2,8 +2,8 @@
 	<section>
 		<div v-if="!editVisible">
 		<div class="head clearfix editHead">
-			<span><router-link to="/index/business">业务管理</router-link><i class="el-icon-arrow-right"></i>规则管理</span>
-			<router-link to="/index/business"><el-button type="primary" size="small" plain >返回</el-button></router-link>
+			<span><router-link to="/index/management/business">业务管理</router-link><i class="el-icon-arrow-right"></i>规则管理</span>
+			<router-link to="/index/management/business"><el-button type="primary" size="small" plain >返回</el-button></router-link>
 			<el-button type="primary" size="small" plain @click="$_addBus()">新增规则</el-button>
 		</div>
 		

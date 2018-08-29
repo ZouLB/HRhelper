@@ -76,7 +76,7 @@
 				</el-form-item>
 				<el-form-item style="margin-bottom: 0;"> 
 					<el-button type="primary" :loading="editLoading" @click="$_editSubmit">确定</el-button>
-					<el-button @click.native="addFormVisible = false">取消</el-button>
+					<el-button @click.native="editFormVisible = false">取消</el-button>
 				</el-form-item>
 			</el-form>
 		</el-dialog>
@@ -160,36 +160,45 @@
 //				this.selectedBus = item;
 //		    },
 			$_addSubmit() {
-				addBus(this.addForm).then((res) => {
-					this.addLoading = true;
-					this.$message({
-						message: '新增成功',
-						type: 'success'
-					});
-					this.addLoading = false;
-					this.addFormVisible = false;
-					this.$_getBus();
-				})
+				this.$refs.addForm.validate((valid) => {
+		          	if (valid) {
+						addBus(this.addForm).then((res) => {
+							this.addLoading = true;
+							this.$message({
+								message: '新增成功',
+								type: 'success'
+							});
+							this.addLoading = false;
+							this.addFormVisible = false;
+							this.$_getBus();
+						})
+					} 
+		        });
 			},
 			$_editSubmit() {
-				let para = {
-					id:this.editForm.id,
-					operationName:this.editForm.operationName,
-					userId:this.editForm.userId
-				}
-		    	editBus(para).then((res) => {
-			    	this.addLoading=true;
-					this.$message({
-						message: '编辑成功',
-						type: 'success'
-					});
-					this.editLoading=false;
-					this.editFormVisible = false;
-					this.$_getBus();
-				})
+				this.$refs.editForm.validate((valid) => {
+		          	if (valid) {
+						let para = {
+							id:this.editForm.id,
+							operationName:this.editForm.operationName,
+							userId:this.editForm.userId
+						}
+				    	editBus(para).then((res) => {
+					    	this.addLoading=true;
+							this.$message({
+								message: '编辑成功',
+								type: 'success'
+							});
+							this.editLoading=false;
+							this.editFormVisible = false;
+							this.$_getBus();
+						})
+				    } 
+		        });
 		    },
 		    $_addBus(){
 		    	this.addFormVisible = true;
+		    	this.$refs["addForm"].resetFields()
 //		    	this.type="add";
 		    	this.addForm = {};
 		    },
