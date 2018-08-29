@@ -4,7 +4,7 @@
 			<!--操作栏-->
 			<div class="head clearfix">
 				<span>待发送文件<i class="el-icon-arrow-right"></i>{{table_title}}</span>
-				<el-button type="primary" size="small">导出</el-button>
+				<el-button type="primary" size="small" @click="$_exportMail">导出</el-button>
 				<el-button type="danger" size="small" plain @click="$_batchCancel">取消发送</el-button>
 				<el-button type="primary" size="small" @click="$_getData()" class='search' plain>搜索</el-button>
 				<el-input placeholder="员工姓名" clearable size="small" v-model="filters.name"><i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
@@ -68,10 +68,11 @@
 				    <!--<el-table-column v-if="table_title=='转正提醒'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>-->
 				    
 				    <el-table-column property="planSendTime" label="发送时间" width="145" show-overflow-tooltip sortable></el-table-column>
-				    <el-table-column fixed="right" property="opera" label="操作" width="80">
+				    <el-table-column fixed="right" property="opera" label="操作" width="110">
 				    	<template slot-scope="scope" >
 				    		<!--<i v-if="table_title=='试用期转正'" class="el-icon-upload2" title="添加附件"></i>-->
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
+				    		<i class="el-icon-circle-plus-outline" title="添加抄送人" @click="$_addCopy(scope.row)"></i>
 				    		<i class="el-icon-hr-cancel" title="取消发送" @click="$_cancel(scope.$index, scope.row)"></i>
 						</template>
 				    </el-table-column>
@@ -91,6 +92,25 @@
 			</div>
 		</div>
 		
+		<!--添加抄送人-->
+		<el-dialog :title="'添加抄送人'" :visible.sync="addFormVisible" :close-on-click-modal="false" width="400px">
+			<!--<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
+				<el-form-item label="业务名称" prop="operationName">
+					<el-input v-model="addForm.operationName" auto-complete="off" placeholder="请输入业务名称"></el-input>
+				</el-form-item>
+				<el-form-item label="接口人" prop="userId">
+					<el-select v-model="addForm.userId" placeholder="请选择接口人">
+					    <el-option v-for="(item,i) in hrForm" :key="i" :label="item.username" :value="item.id">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item style="margin-bottom: 0;"> 
+					<el-button type="primary" :loading="addLoading" @click="$_addSubmit">确定</el-button>
+					<el-button @click.native="addFormVisible = false">取消</el-button>
+				</el-form-item>
+			</el-form>-->
+		</el-dialog>
+		
 		<transition name='fade' mode="out-in">
 			<div class="em-detail child-view" v-if="detailShow">
 	      		<email-detail :email-item.sync="selectedEmail" @on-back="$_onBack"></email-detail>
@@ -102,7 +122,7 @@
 <script>
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
-	import { getMailPage, cancelSendMail, batchCancelSendMail, getMenuList } from '../../api/api';
+	import { getMailPage, cancelSendMail, batchCancelSendMail, getMenuList,mailExport } from '../../api/api';
 	
   	export default {
 	    data() {
@@ -151,7 +171,8 @@
 	        principal:"",//接口人
 	        title:[],
 	      	startTime:'',
-	      	endTime:''
+	      	endTime:'',
+	      	addFormVisible:false
 	      }
 	    },
 	    methods: {
@@ -245,6 +266,62 @@
 					}
 					this.listLoading = false;
 				});
+			},
+			//导出数据
+			$_exportMail(){
+				let para = {
+					status:0,
+					isSpecial:this.special,
+					operationId: this.sortId,
+					employeeName:this.filters.name,
+					department:this.filters.depart, 
+					recruitClass:this.filters.recruit,
+					
+				};	
+				if(this.filters.date!=null&&this.filters.date!=''){
+					this.startTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
+					this.endTime = util.formatDate.format(this.filters.date[1], 'yyyy-MM-dd');
+					if(this.table_title=="合同续签"){
+						para.contractDayStart =this.startTime
+						para.contractDayEnd =this.endTime;
+					}else if(this.table_title=="试用期转正"){
+						para.planFullmenberDayStart = this.startTime;
+						para.planFullmenberDayEnd = this.endTime;
+					}else{
+						para.entryDayStart = this.startTime;
+						para.entryDayEnd = this.endTime;
+					}	
+				}else{
+					if(this.table_title=="合同续签"){
+						para.contractDayStart ='';
+						para.contractDayEnd ='';
+					}else if(this.table_title=="试用期转正"){
+						para.planFullmenberDayStart = '';
+						para.planFullmenberDayEnd = '';
+					}else{
+						para.entryDayStart = '';
+						para.entryDayEnd = '';
+					}	
+				}
+				
+				console.log(para)
+				mailExport(para).then((response, status, request) => {
+					var disp = request.getResponseHeader('Content-Disposition');
+					console.log(disp)
+			        if (disp && disp.search('attachment') != -1) {  //判断是否为文件
+			            var form = $('<form method="POST" action="' + url + '">');
+			            $.each(params, function(k, v) {
+			                form.append($('<input type="hidden" name="' + k +
+			                        '" value="' + v + '">'));
+			            });
+			            $('body').append(form);
+			            form.submit(); //自动提交
+			        }
+				});
+			},
+			//添加抄送人
+			$_addCopy(){
+				this.addFormVisible = true;
 			},
 	    	//取消发送
 	    	$_cancel:function(index,row){
