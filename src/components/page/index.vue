@@ -68,7 +68,7 @@
 				isRouter:true,
 //				['所有分类','入职提醒','绩效表提醒','转正提醒','续签合同','工作年限贺卡']
 				title:[],
-				defaultActive:"/index/waitSend/1/1",
+				defaultActive:"/index/waitSend/1",
 				screenWidth: document.body.clientWidth
 			}
 		},

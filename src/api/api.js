@@ -2,8 +2,8 @@ import axios from 'axios';
 
 //http://10.200.202.36:8080/operation/getOperationMenu
 //let base = process.env.API_URL;
-//let base = "http://cwxx.free.idcfengye.com";
-let base = "http://10.200.202.36:8081";
+let base = "http://cwxx.free.idcfengye.com";
+//let base = "http://10.200.202.36:8081";
 
 //获取菜单
 export const getMenuList = params => { return axios.get(`${base}/operation/getOperationMenu`, { params: params }); };
@@ -67,6 +67,17 @@ export const getAllEmployee = params => { return axios.get(`${base}/employee/lis
 
 //添加抄送人
 export const addCopy = params => { return axios.patch(`${base}/mail/update`, params).then(res => res.data); };
+
+//获取附件
+export const getFile = params => { return axios.get(`${base}/attachment`, { params: params }); };
+
+//添加附件
+export const addFile = params => { return axios.post(`${base}/attachment`, params).then(res => res.data); };
+
+//删除附件
+export const delFile = params => { return axios.delete(`${base}/attachment`, { params: params }); };
+
+
 
 //export const getMailPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
 

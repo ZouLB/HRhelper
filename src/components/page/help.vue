@@ -103,7 +103,7 @@
   export default {
     data() {
       return {
-        activeName: ['1'],
+        activeName: [],
         tableData: [{
           title: '姓名',
           msg: 'convert#name#'

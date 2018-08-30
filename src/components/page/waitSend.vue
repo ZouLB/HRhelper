@@ -73,7 +73,7 @@
 				    		<!--<i v-if="table_title=='试用期转正'" class="el-icon-upload2" title="添加附件"></i>-->
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
 				    		<i class="el-icon-circle-plus-outline" title="添加抄送人" @click="$_addCopy(scope.row.id)"></i>
-				    		<i v-if="table_title=='试用期转正'||table_title=='合同续签'" class="el-icon-document" title="添加附件" @click="$_addFile(scope.row.id)"></i>
+				    		<i v-if="table_title=='试用期转正'||table_title=='合同续签'" class="el-icon-document" title="附件管理" @click="$_addFile(scope.row.id)"></i>
 				    		<i class="el-icon-hr-cancel" title="取消发送" @click="$_cancel(scope.$index, scope.row)"></i>
 						</template>
 				    </el-table-column>
@@ -147,15 +147,23 @@
 		</el-dialog>
 		
 		<!--添加附加-->
-		<el-dialog :title="'添加附件'" :visible.sync="fileFormVisible" :close-on-click-modal="false" width="400px">
+		<el-dialog :title="'附件管理'" :visible.sync="fileFormVisible" :close-on-click-modal="false" width="400px">
 			<el-upload
 			  class="upload-demo"
+			  ref="upload"
 			  drag
 			  action="https://jsonplaceholder.typicode.com/posts/"
+			  :on-preview="handlePreview"
+			  :on-remove="handleRemove"
+			  accept=".doc,.docx,.xls,.xlsx"
+			  :file-list="fileList"
+			  :auto-upload="false"
 			  multiple>
 			  <i class="el-icon-upload"></i>
-			  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-			  <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+			  <div class="el-upload__text">添加附件：将文件拖到此处，或<em>点击上传</em></div>
+			  <!--<el-button slot="trigger" size="small" type="primary">选取文件</el-button>-->
+			  <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
+			  <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
 			</el-upload>
 			
 			<div class="opera">
@@ -176,7 +184,7 @@
 <script>
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
-	import { getMailPage, cancelSendMail, batchCancelSendMail, getMenuList, getAllEmployee, addCopy} from '../../api/api';
+	import { getMailPage, cancelSendMail, batchCancelSendMail, getMenuList, getAllEmployee, addCopy,getFile} from '../../api/api';
 	
   	export default {
 	    data() {
@@ -243,6 +251,7 @@
 	        
 	        //添加附件
 	        fileFormVisible:false,
+	        fileList: []
 	      }
 	    },
 	    methods: {
@@ -407,8 +416,18 @@
 					this.$_getData();
 				})
 			},
+			//附件管理
 			$_addFile(mid){
 				this.fileFormVisible = true;
+				getFile({mailId:mid,ruleId:this.sortId}).then((res) => {
+					if(res.data.resultEntity){
+//						let test =  [{attachmentName: 'test1'}, {attachmentName: 'test2'}]
+//						this.fileList: [{name: 'food.jpeg'}, {name: 'food2.jpeg'}]
+						res.data.resultEntity.forEach((item,index) =>{
+							this.fileList[index] = {name:item.attachmentName}
+						})
+					}
+				})
 			},
 	    	//取消发送
 	    	$_cancel:function(index,row){
@@ -500,7 +519,16 @@
 	                console.log(this.employee)
 //	                this.handleCheckAllChange(this.checkedEmployee)
 	            }
-		    }
+		    },
+		    submitUpload() {
+		        this.$refs.upload.submit();
+		      },
+		      handleRemove(file, fileList) {
+		        console.log(file, fileList);
+		      },
+		      handlePreview(file) {
+		        console.log(file);
+		      }
 	    },
 	    mounted(){
 	   		this.$_initialize();
@@ -544,6 +572,5 @@
 	.el-icon-d-arrow-right{
 		font-size: 30px;
 		margin-left: 16px;
-		/*text-align: center;*/
 	}
 </style>

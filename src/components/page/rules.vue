@@ -57,12 +57,36 @@
 			    <el-table-column property="operation" label="操作" width="100">
 			    	<template slot-scope="scope" >
 			    		<i class="el-icon-edit-outline" title="编辑" @click="$_checkBus(scope.row)"></i>
+			    		<i class="el-icon-document" title="附件管理" @click="$_addFile(scope.row.id)"></i>
 			    		<i class="el-icon-delete" title="删除" @click="$_del(scope.$index, scope.row)"></i>
 					</template>
 			    </el-table-column>
 			</el-table>
 		</div>
 		</div>
+		
+		<!--添加附加-->
+		<el-dialog :title="'附件管理'" :visible.sync="fileFormVisible" :close-on-click-modal="false" width="400px">
+			<el-upload
+			  class="upload-demo"
+			  ref="upload"
+			  drag
+			  action="https://jsonplaceholder.typicode.com/posts/"
+			  :on-preview="handlePreview"
+			  :on-remove="handleRemove"
+			  accept=".doc,.docx,.xls,.xlsx"
+			  :file-list="fileList"
+			  :auto-upload="false"
+			  multiple>
+			  <i class="el-icon-upload"></i>
+			  <div class="el-upload__text">添加附件：将文件拖到此处，或<em>点击上传</em></div>
+			</el-upload>
+			
+			<div class="opera">
+				<el-button type="primary" size="small" :loading="editLoading">确定</el-button>
+				<el-button size="small" @click.native="fileFormVisible = false">取消</el-button>
+			</div>
+		</el-dialog>
 		
 		<transition name='fade' mode="out-in">
 			<div class="child-view" v-if="editVisible">
@@ -75,7 +99,7 @@
 
 <script>
 	import businessEdit from "@/components/page/businessEdit";
-	import { getRuleList, removeRule, changeStatus } from '../../api/api';
+	import { getRuleList, removeRule, changeStatus,getFile } from '../../api/api';
 	
 	export default{
 		data() {
@@ -89,6 +113,10 @@
 				selectedRid:null,
 				currentRow:null,
 		        tableData: [],
+		        
+		        //添加附件
+		        fileFormVisible:false,
+		        fileList: []
 			}
 		},
 		 methods: {
@@ -100,7 +128,7 @@
 		    	this.listLoading = true;
 				getRuleList({operationId:this.$route.params.oid}).then((res) => {
 					this.tableData = res.data.resultEntity;
-					console.log(this.tableData)
+//					console.log(this.tableData)
 					this.listLoading = false;
 				});
 			},
@@ -160,6 +188,28 @@
 					sendingHourofday:null,
 					sendingMinofhour:null
 				};
+		    },
+		    //附件管理
+			$_addFile(mid){
+				this.fileFormVisible = true;
+				getFile({ruleId:mid}).then((res) => {
+					if(res.data.resultEntity){
+						console.log(res.data.resultEntity)
+							res.data.resultEntity.forEach((item,index) =>{
+							this.fileList[index] = {name:item.attachmentName}
+						})
+					}
+					console.log(this.fileList)
+				})
+			},
+			submitUpload() {
+		        this.$refs.upload.submit();
+		    },
+		    handleRemove(file, fileList) {
+		        console.log(file, fileList);
+		    },
+		    handlePreview(file) {
+		        console.log(file);
 		    }
 		},
 		watch:{
@@ -186,6 +236,11 @@
 	}
 	.content{
 		bottom: 22px;
+	}
+	
+	.opera{
+		text-align: center;
+		margin-top: 20px;
 	}
 	
 </style>
