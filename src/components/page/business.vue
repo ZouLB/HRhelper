@@ -198,7 +198,9 @@
 		    },
 		    $_addBus(){
 		    	this.addFormVisible = true;
-		    	this.$refs["addForm"].resetFields()
+		    	if(this.$refs["addForm"]){
+		    		this.$refs["addForm"].resetFields()
+		    	}
 //		    	this.type="add";
 		    	this.addForm = {};
 		    },

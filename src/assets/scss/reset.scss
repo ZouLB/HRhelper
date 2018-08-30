@@ -228,3 +228,16 @@ input:-webkit-autofill {
     width:280px;
     height:40px;
 }
+
+
+#addCopyDialog .el-dialog .el-dialog__body{
+    padding: 15px 30px 20px 30px;
+}
+.panel2 .el-transfer-panel__list.is-filterable{
+    height: 215px !important;
+}
+
+.el-collapse-item__header{
+    font-size: 15px;
+    color: #606266;
+}

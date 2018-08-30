@@ -18,7 +18,7 @@
 						<i class="el-icon-hr-sent-"></i>
 						<span slot="title">待发送邮件</span>
 					</template>
-					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+v.id+'/'+v.isSpecial" @click="defaultActive = '/index/waitSend/'+v.id+'/'+v.isSpecial">
+					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/waitSend/'+v.id" @click="defaultActive = '/index/waitSend/'+v.id+'/'+v.isSpecial">
 					<!--<i class="el-submenu__icon-arrow el-icon-arrow-right"></i>-->
 					{{v.operationName}}
 					</el-menu-item>
@@ -29,7 +29,7 @@
 						<i class="el-icon-hr-sent"></i>
 						<span slot="title">已发送邮件</span>
 					</template>
-					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/sent/'+v.id+'/'+v.isSpecial">
+					<el-menu-item v-for="(v,i) in title" :key="i" :index="'/index/sent/'+v.id">
 						{{v.operationName}}
 					</el-menu-item>
 				</el-submenu>

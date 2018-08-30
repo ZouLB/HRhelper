@@ -35,7 +35,7 @@
         logining: false,
         bg:require('../../assets/img/bg.jpg'),
         ruleForm: {
-          account: 'Zoulb@bingosoft.net',
+          account: 'HRAssistant@bingosoft.net',
           checkPass: 'admin'
         },
         rules: {

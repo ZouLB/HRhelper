@@ -47,14 +47,14 @@
 				    style="width: 100%;">
 				    <el-table-column type="selection" width="50"></el-table-column>
 				    <el-table-column property="employeeName" label="员工姓名" width="80" show-overflow-tooltip></el-table-column>
-				    <el-table-column property="department" label="所属部门"  show-overflow-tooltip sortable></el-table-column>
-				    <el-table-column property="entryDay" label="入职时间" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column property="department" label="所属部门" show-overflow-tooltip sortable min-width="90"></el-table-column>
+				    <el-table-column property="entryDay" label="入职时间" show-overflow-tooltip sortable min-width="90"></el-table-column>
 				    
 				    <!--转正-->
 				    <el-table-column v-if="table_title=='试用期转正'" property="planFullmenberDay" label="拟转正时间" width="130" show-overflow-tooltip sortable></el-table-column>
 				    
 				    <!--绩效-->
-				    <el-table-column v-if="table_title=='绩效表填写'" property="recruitClass" label="招聘类型" show-overflow-tooltip sortable></el-table-column>
+				    <el-table-column v-if="table_title=='绩效表填写'" property="recruitClass" label="招聘类型" show-overflow-tooltip sortable min-width="90"></el-table-column>
 				    
 				    <!--续签-->
 				    <el-table-column v-if="table_title=='合同续签'" property="contractDay" label="合同结束日期" width="130" show-overflow-tooltip sortable></el-table-column>
@@ -68,11 +68,12 @@
 				    <!--<el-table-column v-if="table_title=='转正提醒'" property="recipient" label="审核状态" width="80" show-overflow-tooltip></el-table-column>-->
 				    
 				    <el-table-column property="planSendTime" label="发送时间" width="145" show-overflow-tooltip sortable></el-table-column>
-				    <el-table-column fixed="right" property="opera" label="操作" width="110">
+				    <el-table-column fixed="right" property="opera" label="操作" width="120">
 				    	<template slot-scope="scope" >
 				    		<!--<i v-if="table_title=='试用期转正'" class="el-icon-upload2" title="添加附件"></i>-->
 				    		<i class="el-icon-hr-mail" title="查看邮件" @click="$_checkDetail(scope.row)"></i>
-				    		<i class="el-icon-circle-plus-outline" title="添加抄送人" @click="$_addCopy(scope.row)"></i>
+				    		<i class="el-icon-circle-plus-outline" title="添加抄送人" @click="$_addCopy(scope.row.id)"></i>
+				    		<i v-if="table_title=='试用期转正'||table_title=='合同续签'" class="el-icon-document" title="添加附件" @click="$_addFile(scope.row.id)"></i>
 				    		<i class="el-icon-hr-cancel" title="取消发送" @click="$_cancel(scope.$index, scope.row)"></i>
 						</template>
 				    </el-table-column>
@@ -93,23 +94,76 @@
 		</div>
 		
 		<!--添加抄送人-->
-		<el-dialog :title="'添加抄送人'" :visible.sync="addFormVisible" :close-on-click-modal="false" width="400px">
-			<!--<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="业务名称" prop="operationName">
-					<el-input v-model="addForm.operationName" auto-complete="off" placeholder="请输入业务名称"></el-input>
-				</el-form-item>
-				<el-form-item label="接口人" prop="userId">
-					<el-select v-model="addForm.userId" placeholder="请选择接口人">
-					    <el-option v-for="(item,i) in hrForm" :key="i" :label="item.username" :value="item.id">
-						</el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item style="margin-bottom: 0;"> 
-					<el-button type="primary" :loading="addLoading" @click="$_addSubmit">确定</el-button>
-					<el-button @click.native="addFormVisible = false">取消</el-button>
-				</el-form-item>
-			</el-form>-->
+		<el-dialog :title="'添加抄送人'" :visible.sync="addFormVisible" :close-on-click-modal="false" width="530px" id="addCopyDialog">
+			<div class="el-transfer-panel">
+				<p class="el-transfer-panel__header">
+					<label role="checkbox" class="el-checkbox" aria-checked="mixed">
+						<span class="el-checkbox__input">
+							<el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange"></el-checkbox>
+						</span>
+						<span class="el-checkbox__label">选择抄送人<span>{{checkedEmployee.length}}/{{employee.length}}</span></span>
+					</label>
+				</p>
+				<div class="el-transfer-panel__body">
+					<div class="el-transfer-panel__filter el-input el-input--small el-input--prefix">
+						<input type="text" v-model="searchName" autocomplete="off" placeholder="请输入员工姓名" class="el-input__inner" @keyup="$_getEmployee">
+						<span class="el-input__prefix"><i class="el-input__icon el-icon-search"></i></span>
+					</div>
+					<div role="group" aria-label="checkbox-group" class="el-checkbox-group el-transfer-panel__list is-filterable">
+						<el-checkbox-group v-model="checkedEmployee" @change="handlecheckedEmployeeChange">
+							<label  v-for="e in employee" class="el-checkbox el-transfer-panel__item is-checked">
+						    	<el-checkbox :label="e" :key="e.name">{{e.name}}</el-checkbox>
+							</label>
+						</el-checkbox-group>
+					</div>
+					<p class="el-transfer-panel__empty" style="display: none;">无数据</p>
+				</div>
+			</div>
+			<i class="el-icon-d-arrow-right"></i>
+			<div class="el-transfer-panel panel2">
+				<p class="el-transfer-panel__header">
+					<label role="checkbox" class="el-checkbox" >
+						<span class="el-checkbox__label">已选抄送人<span>{{checkedEmployee.length}}</span></span>
+					</label>
+				</p>
+				<div class="el-transfer-panel__body">
+					<div class="el-transfer-panel__filter el-input el-input--small el-input--prefix">
+						<!--<input type="text" autocomplete="off" placeholder="请输入员工姓名" class="el-input__inner">-->
+						<!--<span class="el-input__prefix"><i class="el-input__icon el-icon-search"></i></span>-->
+					</div>
+					<div role="group" class="el-checkbox-group el-transfer-panel__list is-filterable">
+						<label  v-for="c in checkedEmployee" class="el-checkbox el-transfer-panel__item is-checked">
+						    <i class="el-icon-error" @click="$_delEmployee(c.id)"></i>
+							<span>{{c.name}}</span>
+						</label>
+					</div>
+					<p class="el-transfer-panel__empty" v-if="checkedEmployee.length==0">暂未选择</p>
+				</div>
+			</div>
+			<div class="opera">
+				<el-button type="primary" size="small" :loading="editLoading" @click="$_addSubmit">确定</el-button>
+				<el-button size="small" @click.native="addFormVisible = false">取消</el-button>
+			</div>
 		</el-dialog>
+		
+		<!--添加附加-->
+		<el-dialog :title="'添加附件'" :visible.sync="fileFormVisible" :close-on-click-modal="false" width="400px">
+			<el-upload
+			  class="upload-demo"
+			  drag
+			  action="https://jsonplaceholder.typicode.com/posts/"
+			  multiple>
+			  <i class="el-icon-upload"></i>
+			  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+			  <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+			</el-upload>
+			
+			<div class="opera">
+				<el-button type="primary" size="small" :loading="editLoading">确定</el-button>
+				<el-button size="small" @click.native="fileFormVisible = false">取消</el-button>
+			</div>
+		</el-dialog>
+		
 		
 		<transition name='fade' mode="out-in">
 			<div class="em-detail child-view" v-if="detailShow">
@@ -122,7 +176,7 @@
 <script>
 	import util from '../../assets/js/util.js';
 	import emailDetail from "@/components/page/emailDetail";
-	import { getMailPage, cancelSendMail, batchCancelSendMail, getMenuList,mailExport } from '../../api/api';
+	import { getMailPage, cancelSendMail, batchCancelSendMail, getMenuList, getAllEmployee, addCopy} from '../../api/api';
 	
   	export default {
 	    data() {
@@ -167,12 +221,28 @@
 	        currentPage:1,
 		    detailShow:false,
 	        selectedEmail:null,
-	        special:null,
 	        principal:"",//接口人
 	        title:[],
 	      	startTime:'',
 	      	endTime:'',
-	      	addFormVisible:false
+	      	addFormVisible:false,
+	      	
+	      	//添加抄送人
+	      	checkAll:false,
+	      	checkedEmployee: [],
+	      	checkedName:[],
+	      	checkMail:[],
+	        employee: [],
+	        isIndeterminate: true,
+	        searchName:"",
+	        copyParams:{
+	        	id:'',
+	        	copyPeople:'',
+	        	copyPeopleAddress:''
+	        },
+	        
+	        //添加附件
+	        fileFormVisible:false,
 	      }
 	    },
 	    methods: {
@@ -203,7 +273,6 @@
 				});
 				
 		   		this.sortId = this.$route.params.id;
-		   		this.special = this.$route.params.isSpecial;
 		   		this.$_getData();
 		    },
 		    //获取数据
@@ -212,7 +281,6 @@
 					pageNum: this.page,
 					pageSize: this.pageSize,
 					status:0,
-					isSpecial:this.special,
 					operationId: this.sortId,
 					employeeName:this.filters.name,
 					department:this.filters.depart, 
@@ -271,12 +339,10 @@
 			$_exportMail(){
 				let para = {
 					status:0,
-					isSpecial:this.special,
 					operationId: this.sortId,
 					employeeName:this.filters.name,
 					department:this.filters.depart, 
 					recruitClass:this.filters.recruit,
-					
 				};	
 				if(this.filters.date!=null&&this.filters.date!=''){
 					this.startTime = util.formatDate.format(this.filters.date[0], 'yyyy-MM-dd');
@@ -304,24 +370,45 @@
 					}	
 				}
 				
-				console.log(para)
-				mailExport(para).then((response, status, request) => {
-					var disp = request.getResponseHeader('Content-Disposition');
-					console.log(disp)
-			        if (disp && disp.search('attachment') != -1) {  //判断是否为文件
-			            var form = $('<form method="POST" action="' + url + '">');
-			            $.each(params, function(k, v) {
-			                form.append($('<input type="hidden" name="' + k +
-			                        '" value="' + v + '">'));
-			            });
-			            $('body').append(form);
-			            form.submit(); //自动提交
-			        }
-				});
+				let exportUrl = '/http://10.200.202.36:8081/mail/export?';
+			    Object.keys(para).map((key)=>{
+			        exportUrl += key + '=' + para[key] +'&';    
+			    })
+			    exportUrl = exportUrl.substring(exportUrl.length-1,1)
+				window.location.href = exportUrl;
+//			    console.log(exportUrl);
+			},
+			//添加抄送人弹窗
+			$_addCopy(mid){
+				this.addFormVisible = true;
+				this.$_getEmployee();
+				this.copyParams.id = mid;
+			},
+			//获取公司人员
+			$_getEmployee(){
+				getAllEmployee({employeeName:this.searchName}).then((res) => {
+					this.employee = res.data.resultEntity;
+				})
 			},
 			//添加抄送人
-			$_addCopy(){
-				this.addFormVisible = true;
+			$_addSubmit(){
+				this.checkedEmployee.forEach((item) => {
+					this.copyParams.copyPeople+=item.name+',';
+					this.copyParams.copyPeopleAddress+=item.mail+',';
+				})
+				this.copyParams.copyPeople = this.copyParams.copyPeople.slice(0,this.copyParams.copyPeople.length-1)
+				this.copyParams.copyPeopleAddress = this.copyParams.copyPeopleAddress.slice(0,this.copyParams.copyPeopleAddress.length-1)
+				addCopy(this.copyParams).then((res) => {
+					this.$message({
+						message: '添加成功',
+						type: 'success'
+					});
+					this.addFormVisible = false;
+					this.$_getData();
+				})
+			},
+			$_addFile(mid){
+				this.fileFormVisible = true;
 			},
 	    	//取消发送
 	    	$_cancel:function(index,row){
@@ -388,7 +475,32 @@
 				this.pageSize = val
 				this.$_getData();
 		    },
-	    	
+		    
+	    	//添加抄送人部分
+	    	//全选
+	    	handleCheckAllChange(val) {
+		        this.checkedEmployee = val ? this.employee : [];
+		        this.isIndeterminate = false;
+		        console.log(this.employee)
+		    },
+		    handlecheckedEmployeeChange(value) {
+		        let checkedCount = value.length;
+		        this.checkAll = checkedCount === this.employee.length;
+		        this.isIndeterminate = checkedCount > 0 && checkedCount < this.employee.length;
+		    },
+		    $_delEmployee(id){
+		    	let index = this.checkedEmployee.findIndex((c) => c.id == id);
+	            if (index >= 0) {
+					this.checkedEmployee.splice(index,1);
+					if(this.checkAll==true){
+						this.checkAll=false;
+						this.isIndeterminate=true;
+					}
+	                console.log(this.checkedEmployee)
+	                console.log(this.employee)
+//	                this.handleCheckAllChange(this.checkedEmployee)
+	            }
+		    }
 	    },
 	    mounted(){
 	   		this.$_initialize();
@@ -399,12 +511,11 @@
 	   			this.detailShow = false;
 	   		},
 	   		table_title(){
-	   			
-		      		this.filters.name=''
-		      		this.filters.depart=''
-		      		this.filters.date=''
-		      		this.filters.recruit=''
-		      		this.$_initialize();
+	      		this.filters.name=''
+	      		this.filters.depart=''
+	      		this.filters.date=''
+	      		this.filters.recruit=''
+	      		this.$_initialize();
 	   		}
 	    },
 	    components: {
@@ -417,4 +528,22 @@
 	
 	@import "src/assets/scss/_common.scss";
 	
+	.el-icon-error{
+		color: #e4e4e4;
+	}
+	.el-transfer-panel__item:hover .el-icon-error{
+		color: #409EFF;
+	}
+	.opera{
+		text-align: center;
+		margin-top: 20px;
+	}
+	.panel2{
+		float: right;
+	}
+	.el-icon-d-arrow-right{
+		font-size: 30px;
+		margin-left: 16px;
+		/*text-align: center;*/
+	}
 </style>

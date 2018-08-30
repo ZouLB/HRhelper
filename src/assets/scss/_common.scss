@@ -79,8 +79,9 @@ section {
     .el-icon-edit-outline,
     .el-icon-hr-mail,
     .el-icon-setting,
-    .el-icon-circle-plus-outline{
-        margin-right: 10px;
+    .el-icon-circle-plus-outline,
+    .el-icon-document{
+        margin-right: 5px;
         &:hover{
             color: $maincolor;
         }
@@ -89,6 +90,7 @@ section {
         font: bold 16px "微软雅黑";
         position: relative;
         top: -1px;
+        margin-right: 6px;
     }
     .el-icon-hr-cancel{
         font-weight: bold;
@@ -135,3 +137,4 @@ section {
         margin-left: 10px;
     }
 }
+
