@@ -2,8 +2,8 @@ import axios from 'axios';
 
 //http://10.200.202.36:8080/operation/getOperationMenu
 //let base = process.env.API_URL;
-let base = "http://cwxx.free.idcfengye.com";
-//let base = "http://10.200.202.36:8081";
+//let base = "http://cwxx.free.idcfengye.com";
+let base = "http://10.200.202.36:8081";
 
 //获取菜单
 export const getMenuList = params => { return axios.get(`${base}/operation/getOperationMenu`, { params: params }); };

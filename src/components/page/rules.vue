@@ -73,17 +73,17 @@
 			  drag
 			  action="https://jsonplaceholder.typicode.com/posts/"
 			  :on-preview="handlePreview"
+			  :before-remove="beforeRemove"
 			  :on-remove="handleRemove"
-			  accept=".doc,.docx,.xls,.xlsx"
+			  :on-change="handleChange"
 			  :file-list="fileList"
-			  :auto-upload="false"
 			  multiple>
 			  <i class="el-icon-upload"></i>
 			  <div class="el-upload__text">添加附件：将文件拖到此处，或<em>点击上传</em></div>
 			</el-upload>
 			
 			<div class="opera">
-				<el-button type="primary" size="small" :loading="editLoading">确定</el-button>
+				<el-button type="primary" size="small" :loading="editLoading" @click="$_test">确定</el-button>
 				<el-button size="small" @click.native="fileFormVisible = false">取消</el-button>
 			</div>
 		</el-dialog>
@@ -93,6 +93,9 @@
 	      		<business-edit :business-item.sync="selectedBus" :rule-id.sync="selectedRid" @on-back="$_onBack"></business-edit>
 	    	</div>
 	    </transition>
+		
+		
+		
 		
 	</section>
 </template>
@@ -116,7 +119,9 @@
 		        
 		        //添加附件
 		        fileFormVisible:false,
-		        fileList: []
+		        fileList: [],
+		        mailId:0,
+		        temFile:[1,2],
 			}
 		},
 		 methods: {
@@ -189,27 +194,96 @@
 					sendingMinofhour:null
 				};
 		    },
+		    $_test(){
+				this.fileFormVisible = false;
+			},
 		    //附件管理
+//			$_addFile(mid){
+//				
+////				getFile({ruleId:mid}).then((res) => {
+////					if(res.data.resultEntity){
+////						console.log(res.data.resultEntity)
+////						res.data.resultEntity.forEach((item,index) =>{
+////							this.fileList[index] = {name:item.attachmentName}
+////						})
+////					}
+////				})
+//				console.log(this.fileList)
+//				this.fileFormVisible = true;
+//				
+//			},
 			$_addFile(mid){
-				this.fileFormVisible = true;
-				getFile({ruleId:mid}).then((res) => {
+				this.mailId = mid;
+				this.$_getFile();
+				
+//				getFile({ruleId:mid}).then((res) => {
+//					if(res.data.resultEntity){
+//						res.data.resultEntity.forEach((item,index) =>{
+//							this.fileList[index] = {name:item.attachmentName}
+//							this.fileFormVisible = true;
+//						})
+//					}else{
+//						this.fileList=[];
+//						this.fileFormVisible = true;
+//					}
+//					console.log(this.fileList)
+//				})
+				
+					
+				
+			},
+			$_getFile(){
+				getFile({ruleId:this.mailId}).then((res) => {
 					if(res.data.resultEntity){
-						console.log(res.data.resultEntity)
-							res.data.resultEntity.forEach((item,index) =>{
+						res.data.resultEntity.forEach((item,index) =>{
+							console.log(item)
 							this.fileList[index] = {name:item.attachmentName}
+							this.fileFormVisible = true;
 						})
+					}else{
+						this.fileList=[];
+						this.fileFormVisible = true;
 					}
 					console.log(this.fileList)
 				})
 			},
-			submitUpload() {
+		    submitUpload() {
 		        this.$refs.upload.submit();
+		    },
+		    beforeRemove(file, fileList) {
+		        return this.$confirm(`确定移除 ${ file.name }？`)
+//		        .then(() => {
+////					let para = { mailIds: ids };
+////					batchCancelSendMail(para).then((res) => {
+////						this.listLoading = false;
+////						this.$message({
+////							message: '取消发送成功',
+////							type: 'success'
+////						});
+////						this.$_getData();
+////					});
+//			    })
+//			    .catch(() => {}););
 		    },
 		    handleRemove(file, fileList) {
 		        console.log(file, fileList);
 		    },
 		    handlePreview(file) {
 		        console.log(file);
+		    },
+		    handleChange() {
+//		       getFile({ruleId:this.mailId}).then((res) => {
+//					if(res.data.resultEntity){
+//						res.data.resultEntity.forEach((item,index) =>{
+//							this.fileList[index] = {name:item.attachmentName}
+//							this.fileFormVisible = true;
+//						})
+//					}else{
+//						this.fileList=[];
+////						this.fileFormVisible = true;
+//					}
+//					console.log(this.fileList)
+//				})
 		    }
 		},
 		watch:{

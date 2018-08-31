@@ -154,10 +154,10 @@
 			  drag
 			  action="https://jsonplaceholder.typicode.com/posts/"
 			  :on-preview="handlePreview"
+			  :before-remove="beforeRemove"
 			  :on-remove="handleRemove"
-			  accept=".doc,.docx,.xls,.xlsx"
+			  :on-change="handleChange"
 			  :file-list="fileList"
-			  :auto-upload="false"
 			  multiple>
 			  <i class="el-icon-upload"></i>
 			  <div class="el-upload__text">添加附件：将文件拖到此处，或<em>点击上传</em></div>
@@ -167,7 +167,7 @@
 			</el-upload>
 			
 			<div class="opera">
-				<el-button type="primary" size="small" :loading="editLoading">确定</el-button>
+				<el-button type="primary" size="small" :loading="editLoading" @click="$_test()">确定</el-button>
 				<el-button size="small" @click.native="fileFormVisible = false">取消</el-button>
 			</div>
 		</el-dialog>
@@ -387,49 +387,7 @@
 				window.location.href = exportUrl;
 //			    console.log(exportUrl);
 			},
-			//添加抄送人弹窗
-			$_addCopy(mid){
-				this.addFormVisible = true;
-				this.$_getEmployee();
-				this.copyParams.id = mid;
-			},
-			//获取公司人员
-			$_getEmployee(){
-				getAllEmployee({employeeName:this.searchName}).then((res) => {
-					this.employee = res.data.resultEntity;
-				})
-			},
-			//添加抄送人
-			$_addSubmit(){
-				this.checkedEmployee.forEach((item) => {
-					this.copyParams.copyPeople+=item.name+',';
-					this.copyParams.copyPeopleAddress+=item.mail+',';
-				})
-				this.copyParams.copyPeople = this.copyParams.copyPeople.slice(0,this.copyParams.copyPeople.length-1)
-				this.copyParams.copyPeopleAddress = this.copyParams.copyPeopleAddress.slice(0,this.copyParams.copyPeopleAddress.length-1)
-				addCopy(this.copyParams).then((res) => {
-					this.$message({
-						message: '添加成功',
-						type: 'success'
-					});
-					this.addFormVisible = false;
-					this.$_getData();
-				})
-			},
-			//附件管理
-			$_addFile(mid){
-				this.fileFormVisible = true;
-				getFile({mailId:mid,ruleId:this.sortId}).then((res) => {
-					if(res.data.resultEntity){
-//						let test =  [{attachmentName: 'test1'}, {attachmentName: 'test2'}]
-//						this.fileList: [{name: 'food.jpeg'}, {name: 'food2.jpeg'}]
-						res.data.resultEntity.forEach((item,index) =>{
-							this.fileList[index] = {name:item.attachmentName}
-						})
-					}
-				})
-			},
-	    	//取消发送
+			//取消发送
 	    	$_cancel:function(index,row){
 	    		this.$confirm('取消后将不能恢复，确认取消发送吗?', '提示', {
 					type: 'warning'
@@ -495,12 +453,41 @@
 				this.$_getData();
 		    },
 		    
-	    	//添加抄送人部分
+			//添加抄送人弹窗
+			$_addCopy(mid){
+				this.addFormVisible = true;
+				this.$_getEmployee();
+				this.copyParams.id = mid;
+				this.checkedEmployee =[];
+			},
+			//获取公司人员
+			$_getEmployee(){
+				getAllEmployee({employeeName:this.searchName}).then((res) => {
+					this.employee = res.data.resultEntity;
+				})
+			},
+			//添加抄送人
+			$_addSubmit(){
+				this.checkedEmployee.forEach((item) => {
+					this.copyParams.copyPeople+=item.name+',';
+					this.copyParams.copyPeopleAddress+=item.mail+',';
+				})
+				this.copyParams.copyPeople = this.copyParams.copyPeople.slice(0,this.copyParams.copyPeople.length-1)
+				this.copyParams.copyPeopleAddress = this.copyParams.copyPeopleAddress.slice(0,this.copyParams.copyPeopleAddress.length-1)
+				addCopy(this.copyParams).then((res) => {
+					this.$message({
+						message: '添加成功',
+						type: 'success'
+					});
+					this.addFormVisible = false;
+					this.$_getData();
+				})
+			},
 	    	//全选
 	    	handleCheckAllChange(val) {
 		        this.checkedEmployee = val ? this.employee : [];
 		        this.isIndeterminate = false;
-		        console.log(this.employee)
+//		        console.log(this.employee)
 		    },
 		    handlecheckedEmployeeChange(value) {
 		        let checkedCount = value.length;
@@ -515,20 +502,58 @@
 						this.checkAll=false;
 						this.isIndeterminate=true;
 					}
-	                console.log(this.checkedEmployee)
-	                console.log(this.employee)
+//	                console.log(this.checkedEmployee)
+//	                console.log(this.employee)
 //	                this.handleCheckAllChange(this.checkedEmployee)
 	            }
 		    },
+			$_test(){
+				this.fileFormVisible = false;
+			},
+			//附件管理
+			$_addFile(mid){
+				this.fileFormVisible = true;
+				getFile({mailId:mid,ruleId:this.sortId}).then((res) => {
+					if(res.data.resultEntity){
+//						let test =  [{attachmentName: 'test1'}, {attachmentName: 'test2'}]
+//						this.fileList: [{name: 'food.jpeg'}, {name: 'food2.jpeg'}]
+						res.data.resultEntity.forEach((item,index) =>{
+							this.fileList[index] = {name:item.attachmentName,id:item.attachmentId}
+						})
+						console.log(this.fileList)
+					}
+					
+				})
+				
+				console.log(this.fileList)
+//				this.fileList =[{name:'111'}]
+			},
 		    submitUpload() {
 		        this.$refs.upload.submit();
-		      },
-		      handleRemove(file, fileList) {
+		    },
+		    beforeRemove(file, fileList) {
+		        return this.$confirm(`确定移除 ${ file.name }？`)
+//		        .then(() => {
+////					let para = { mailIds: ids };
+////					batchCancelSendMail(para).then((res) => {
+////						this.listLoading = false;
+////						this.$message({
+////							message: '取消发送成功',
+////							type: 'success'
+////						});
+////						this.$_getData();
+////					});
+//			    })
+//			    .catch(() => {}););
+		    },
+		    handleRemove(file, fileList) {
 		        console.log(file, fileList);
-		      },
-		      handlePreview(file) {
+		    },
+		    handlePreview(file) {
 		        console.log(file);
-		      }
+		    },
+		    handleChange(file, fileList) {
+		    }
 	    },
 	    mounted(){
 	   		this.$_initialize();
