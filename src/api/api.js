@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-//http://10.200.202.36:8080/operation/getOperationMenu
 //let base = process.env.API_URL;
 //let base = "http://cwxx.free.idcfengye.com";
 let base = "http://10.200.202.36:8081";

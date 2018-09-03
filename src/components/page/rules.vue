@@ -92,11 +92,7 @@
 			<div class="child-view" v-if="editVisible">
 	      		<business-edit :business-item.sync="selectedBus" :rule-id.sync="selectedRid" @on-back="$_onBack"></business-edit>
 	    	</div>
-	    </transition>
-		
-		
-		
-		
+	   </transition>
 	</section>
 </template>
 
@@ -232,20 +228,23 @@
 					
 				
 			},
+//			async function testResult() {
+//			    let result = await $_getFile();
+//			    console.log(result);
+//			},
 			$_getFile(){
 				getFile({ruleId:this.mailId}).then((res) => {
 					if(res.data.resultEntity){
 						res.data.resultEntity.forEach((item,index) =>{
 							console.log(item)
 							this.fileList[index] = {name:item.attachmentName}
-							this.fileFormVisible = true;
 						})
 					}else{
 						this.fileList=[];
-						this.fileFormVisible = true;
 					}
 					console.log(this.fileList)
-				})
+				});
+				this.fileFormVisible = true;
 			},
 		    submitUpload() {
 		        this.$refs.upload.submit();

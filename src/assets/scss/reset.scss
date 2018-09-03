@@ -241,3 +241,12 @@ input:-webkit-autofill {
     font-size: 15px;
     color: #606266;
 }
+
+.quill-editor{
+    strong{
+        font-weight: bold !important;
+    }
+    em{
+        font-style: italic;   
+    }
+}

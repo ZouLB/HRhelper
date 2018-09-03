@@ -13,6 +13,10 @@
 					<i class="el-icon-arrow-left"></i>
 					<span slot="title">菜单栏</span>
 				</el-menu-item>
+				<el-menu-item index="/index/home">
+					<i class="el-icon-hr-home"></i>
+					<span slot="title">首页</span>
+				</el-menu-item>
 				<el-submenu index="3">
 					<template slot="title">
 						<i class="el-icon-hr-sent-"></i>
@@ -38,12 +42,8 @@
 					<i class="el-icon-hr-business2"></i>
 					<span slot="title">业务管理</span>
 				</el-menu-item>
-				<!--<el-menu-item index="/index/templateWrite">
-					<i class="el-icon-hr-mail1"></i>
-					<span slot="title">业务管理</span>
-				</el-menu-item>-->
 				<el-menu-item index="/index/help">
-					<i class="el-icon-news"></i>
+					<i class="el-icon-hr-custom-help"></i>
 					<span slot="title">帮助</span>
 				</el-menu-item>
 			</el-menu>
