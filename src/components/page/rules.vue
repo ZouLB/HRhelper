@@ -72,20 +72,20 @@
 			  ref="upload"
 			  drag
 			  action="https://jsonplaceholder.typicode.com/posts/"
-			  :on-preview="handlePreview"
 			  :before-remove="beforeRemove"
 			  :on-remove="handleRemove"
-			  :on-change="handleChange"
+			  :on-success="uploadSuccess"
+			  :on-error="uploadError"
 			  :file-list="fileList"
 			  multiple>
 			  <i class="el-icon-upload"></i>
 			  <div class="el-upload__text">添加附件：将文件拖到此处，或<em>点击上传</em></div>
 			</el-upload>
 			
-			<div class="opera">
+			<!--<div class="opera">
 				<el-button type="primary" size="small" :loading="editLoading" @click="$_test">确定</el-button>
 				<el-button size="small" @click.native="fileFormVisible = false">取消</el-button>
-			</div>
+			</div>-->
 		</el-dialog>
 		
 		<transition name='fade' mode="out-in">
@@ -98,7 +98,7 @@
 
 <script>
 	import businessEdit from "@/components/page/businessEdit";
-	import { getRuleList, removeRule, changeStatus,getFile } from '../../api/api';
+	import { getRuleList, removeRule, changeStatus,getFile, addFile, delFile } from '../../api/api';
 	
 	export default{
 		data() {
@@ -267,22 +267,13 @@
 		    handleRemove(file, fileList) {
 		        console.log(file, fileList);
 		    },
-		    handlePreview(file) {
-		        console.log(file);
+		    uploadSuccess(response, file, fileList){
+		    	console.log(response)
+           		console.log(file)
+           		console.log(fileList)
 		    },
-		    handleChange() {
-//		       getFile({ruleId:this.mailId}).then((res) => {
-//					if(res.data.resultEntity){
-//						res.data.resultEntity.forEach((item,index) =>{
-//							this.fileList[index] = {name:item.attachmentName}
-//							this.fileFormVisible = true;
-//						})
-//					}else{
-//						this.fileList=[];
-////						this.fileFormVisible = true;
-//					}
-//					console.log(this.fileList)
-//				})
+		    uploadError(){
+		    	this.$message.error('上传失败');
 		    }
 		},
 		watch:{
